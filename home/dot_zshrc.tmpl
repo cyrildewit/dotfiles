@@ -1,7 +1,7 @@
-export XDG_DATA_HOME=$HOME/.local/share
-export XDG_CONFIG_HOME=$HOME/.config
-export XDG_STATE_HOME=$HOME/.local/state
-export XDG_CACHE_HOME=$HOME/.cache
+export XDG_DATA_HOME={{ .xdgDataDir }}
+export XDG_CONFIG_HOME={{ .xdgConfigDir }}
+export XDG_STATE_HOME={{ .xdgStateDir }}
+export XDG_CACHE_HOME={{ .xdgCacheDir }}
 
 #eval "$(oh-my-posh init zsh --config ~/cyrildewit.omp.json)"
 eval "$(oh-my-posh init zsh)"
