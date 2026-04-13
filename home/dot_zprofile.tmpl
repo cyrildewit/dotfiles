@@ -1,0 +1,8 @@
+{{ if stat "/opt/homebrew/bin/brew" -}}
+fpath+=("{{ output "/opt/homebrew/bin/brew" "--prefix" | trim }}/share/zsh/site-functions")
+
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Added by Toolbox App
+export PATH="$PATH:/Users/cyrildewit/Library/Application Support/JetBrains/Toolbox/scripts"
+{{ end -}}
