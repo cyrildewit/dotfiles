@@ -1,0 +1,9 @@
+[user]
+    name = {{ .full_name | quote }}
+    email = {{ .email | quote }}
+
+[include]
+    path = config-personal
+
+[includeIf "gitdir:{{ .archipel_academy.dir }}/"]
+    path = gitconfig-work-archipel-academy

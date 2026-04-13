@@ -1,0 +1,11 @@
+[user]
+    signingkey = {{ onepasswordRead "op://lyiokpptmbyfo6str5tntvaemy/ebrgp4xf4lheweoxh5ap5nh574/public key" }}
+
+[gpg]
+    format = ssh
+
+[gpg "ssh"]
+    program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+
+[commit]
+    gpgsign = true
