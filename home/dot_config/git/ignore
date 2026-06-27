@@ -1,0 +1,27 @@
+# Global gitignore — applies to every repository on this machine.
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+.fseventsd
+.VolumeIcon.icns
+Icon?
+.com.apple.timemachine.donotpresent
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+.history/
+
+# Vim / Neovim
+*~
+*.swp
+*.swo
+*.swn
+Session.vim
+.netrwhist
