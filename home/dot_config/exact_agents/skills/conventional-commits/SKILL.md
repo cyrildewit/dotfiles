@@ -43,7 +43,7 @@ Format every proposal with rich markdown so it renders clearly in the terminal. 
 - A blockquote one-line summary: `> **Summary:** …`.
 - The commit message inside a fenced ` ```gitcommit ` block.
 - A bold **What changes** label with a fenced ` ```diff ` block — `+ ` prefixes an added file, `- ` a removed file, and two leading spaces a modified file — so additions render green and removals red.
-- A closing **Approve?** `yes` / `no` line.
+- A closing **Approve?** `yes` / `no` line — only when falling back to plain text. Omit it when asking through an interactive question tool, which renders its own options (see step 4).
 
 Example of one rendered proposal:
 
@@ -69,7 +69,7 @@ optional body — only for complex changes
   path/to/modified-file.ext
 ```
 
-**Approve?** `yes` / `no`
+**Approve?** `yes` / `no`  ← plain-text fallback only; omit when using an interactive question tool
 
 ### Conventional Commit Types:
 - `feat`: A new feature
@@ -85,12 +85,28 @@ optional body — only for complex changes
 
 ## 4. Process User Response
 
-- If **yes**: Stage only the listed files and execute the commit
+Ask for approval interactively when the harness supports it. In Claude Code, use
+the `AskUserQuestion` tool with one question per commit group:
+
+- `header`: `Commit N` (max 12 characters)
+- `question`: the commit's subject line
+- `preview`: the full commit message and the list of files
+- Options: `Commit it` · `Edit the message` · `Regroup the files`
+
+Do not add an "Other" option — the tool always supplies a free-text escape hatch.
+Options cap at four, so anything more nuanced arrives through that.
+
+If no interactive question tool is available, fall back to asking in plain text
+and waiting for a yes/no reply.
+
+Then act on the answer:
+
+- **Commit it**: Stage only the listed files and execute the commit
   ```bash
   git add path/to/file-one.ext path/to/file-two.ext
   git commit -m "commit message here"
   ```
-- If **no** or user provides feedback: Incorporate feedback and propose again using the same template
+- **Any other answer**: Incorporate the feedback and propose again using the same template
 
 ## 5. Repeat
 
