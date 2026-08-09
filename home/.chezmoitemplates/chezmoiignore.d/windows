@@ -1,0 +1,4 @@
+# Ignored only on Windows.
+
+# Homebrew config is macOS-only here.
+.config/homebrew

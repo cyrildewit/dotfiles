@@ -1,0 +1,4 @@
+# Ignored on every OS.
+
+# Canonical skills storage: source-only, exposed via the ~/.agents symlink adapter.
+.config/agents
