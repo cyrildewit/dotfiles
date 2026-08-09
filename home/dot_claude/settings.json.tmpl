@@ -5,5 +5,19 @@
   "env": {
     "DISABLE_TELEMETRY": "1",
     "DISABLE_ERROR_REPORTING": "1"
+  },
+  "permissions": {
+    "deny": [
+      "Bash(sudo:*)",
+      "Read(.env*)",
+      "Read(id_rsa*)",
+      "Read(id_ed25519*)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Read(**/secrets/**)",
+      "Read(**/*.pem)",
+      "Edit(.env*)",
+      "Write(.env*)"
+    ]
   }
 }
