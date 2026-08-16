@@ -65,13 +65,15 @@ function install_oh_my_posh() {
     add_tap
     trust_formula
 
+    # The tap publishes a formula and a cask under the same name, so brew warns
+    # about the ambiguity unless it is told which one is meant.
     if is_ci; then
         echo "Resolving ${FORMULA}."
-        brew info "${FORMULA}" > /dev/null
+        brew info --formula "${FORMULA}" > /dev/null
         return 0
     fi
 
-    brew install "${FORMULA}"
+    brew install --formula "${FORMULA}"
 }
 
 #
