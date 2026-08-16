@@ -1,0 +1,4 @@
+{{ $dotnet := dig "dotnet" false . -}}
+{{ if and (eq .chezmoi.os "darwin") $dotnet -}}
+{{   include "../install/macos/optional/dotnet.sh" }}
+{{- end }}

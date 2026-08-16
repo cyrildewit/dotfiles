@@ -38,6 +38,23 @@ chezmoi init --prompt
 The gate reads through `dig` so that a config written before this prompt
 existed still applies, defaulting to `personal`.
 
+### Optional stacks
+
+Machine type answers *whose* machine this is. A toolchain is a separate
+question, so it gets its own answer rather than being folded into that one:
+
+```gotmpl
+{{- $dotnet := promptBoolOnce . "dotnet" "Set up .NET development" false -}}
+```
+
+Scripts under `install/macos/optional/` are gated on the result the same way,
+and default to off — so `--promptDefaults` installs none of them.
+
+A toolchain earns a prompt when it is heavy, needs more than one step, and is
+decided once when the machine is set up. `dotnet` and `aspire` are close to a
+gigabyte together and need a tap, so they qualify. Anything that is one quick
+`brew install` belongs in `tools.sh` instead, with no question attached.
+
 ### What gets installed
 
 | Script | Installs | Personal | Work |
@@ -51,6 +68,7 @@ existed still applies, defaulting to `personal`.
 | `applications.sh` | `1password`, `1password-cli`, `betterdisplay`, `brave-browser`, `claude`, `claude-code`, `ghostty`, `jetbrains-toolbox`, `logi-options+`, `macsyzones`, `spotify`, `todoist-app`, `visual-studio-code` | ✓ | ✓ |
 | `fonts.sh` | `font-jetbrains-mono-nerd-font` | ✓ | ✓ |
 | `personal/applications.sh` | `proton-drive`, `proton-mail`, `proton-pass` | ✓ | — |
+| `optional/dotnet.sh` | `dotnet`, `aspire` | opt-in | opt-in |
 
 Everything above is skipped when it is already installed, including apps that
 were installed by hand rather than through Homebrew.

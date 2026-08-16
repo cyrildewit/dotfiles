@@ -1,8 +1,10 @@
 {{- $machineChoices := list "personal" "work" -}}
 {{- $machine := promptChoiceOnce . "machine" "Machine type" $machineChoices "personal" -}}
+{{- $dotnet := promptBoolOnce . "dotnet" "Set up .NET development" false -}}
 
 [data]
     machine = {{ $machine | quote }}
+    dotnet = {{ $dotnet }}
     full_name = "Cyril de Wit"
     email = "cyril@cyrildewit.nl"
     username = "cyrildewit"
