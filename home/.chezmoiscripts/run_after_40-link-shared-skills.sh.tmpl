@@ -1,0 +1,22 @@
+{{/*
+   @file home/.chezmoiscripts/run_after_40-link-shared-skills.sh.tmpl
+   @brief Run the shared-skills linker anywhere that has a POSIX shell.
+   @description
+     Windows has no interpreter for a `.sh` script unless one is configured,
+     so an ungated script here fails the entire apply rather than just itself.
+     Rendering empty is how chezmoi is told to skip a script.
+
+     `.chezmoiignore` is not an alternative: it does not apply to scripts,
+     which still run when listed in it.
+
+     The guard is `ne "windows"` rather than a list of the systems that are
+     wanted, because what the body needs is a POSIX shell, and every system
+     other than Windows has one. The Windows half is a sibling `.ps1` shim
+     rather than a branch here — chezmoi picks the interpreter from the
+     extension, so the two never both render.
+
+     TODO: Check if we can implement a windows specific script for this along side the sh script or we can reuse it.
+*/ -}}
+{{ if ne .chezmoi.os "windows" -}}
+{{   include "../scripts/unix/link-shared-skills.sh" }}
+{{- end }}
