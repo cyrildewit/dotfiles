@@ -15,6 +15,46 @@ chezmoi runs them through thin shims in `home/.chezmoiscripts/<os>/`:
 `include` resolves from the source dir (`home/`), so `../install/` is the repo
 root. On other systems the shim renders empty and chezmoi skips it.
 
+### Machine type
+
+`chezmoi init` asks whether this is a `personal` or a `work` machine and stores
+the answer as `machine` in `~/.config/chezmoi/chezmoi.toml`, which stays on the
+machine and is never committed. Scripts under `install/macos/personal/` are
+gated on it, so a work machine renders them empty and never runs them:
+
+```gotmpl
+{{ $machine := dig "machine" "personal" . -}}
+{{ if and (eq .chezmoi.os "darwin") (eq $machine "personal") -}}
+{{   include "../install/macos/personal/applications.sh" }}
+{{- end }}
+```
+
+The answer is only asked once. To change it later:
+
+```sh
+chezmoi init --prompt
+```
+
+The gate reads through `dig` so that a config written before this prompt
+existed still applies, defaulting to `personal`.
+
+### What gets installed
+
+| Script | Installs | Personal | Work |
+| --- | --- | :-: | :-: |
+| `command_line_tools.sh` | Xcode Command Line Tools | ✓ | ✓ |
+| `homebrew.sh` | Homebrew | ✓ | ✓ |
+| `dependencies.sh` | `gh`, `git`, `zsh` | ✓ | ✓ |
+| `oh_my_posh.sh` | `oh-my-posh` | ✓ | ✓ |
+| `docker.sh` | `docker-desktop` | ✓ | ✓ |
+| `tools.sh` | `htop`, `zsh-autosuggestions` | ✓ | ✓ |
+| `applications.sh` | `1password`, `1password-cli`, `betterdisplay`, `brave-browser`, `claude`, `claude-code`, `ghostty`, `jetbrains-toolbox`, `spotify`, `visual-studio-code` | ✓ | ✓ |
+| `fonts.sh` | `font-jetbrains-mono-nerd-font` | ✓ | ✓ |
+| `personal/applications.sh` | `proton-drive`, `proton-mail`, `proton-pass` | ✓ | — |
+
+Everything above is skipped when it is already installed, including apps that
+were installed by hand rather than through Homebrew.
+
 ### When scripts run
 
 The filename prefix picks the hook:
