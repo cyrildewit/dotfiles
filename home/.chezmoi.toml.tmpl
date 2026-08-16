@@ -1,4 +1,7 @@
+{{- $machine := promptChoiceOnce . "machine" "Machine type" (list "personal" "work") "personal" -}}
+
 [data]
+    machine = {{ $machine | quote }}
     full_name = "Cyril de Wit"
     email = "cyril@cyrildewit.nl"
     username = "cyrildewit"

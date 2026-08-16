@@ -16,9 +16,16 @@ fi
 readonly CASKS=(
     1password
     1password-cli
+    betterdisplay
+    brave-browser
+    claude
     claude-code
     ghostty
     jetbrains-toolbox
+    proton-drive
+    proton-mail
+    proton-pass
+    spotify
     visual-studio-code
 )
 
@@ -32,7 +39,13 @@ readonly CASKS=(
 function bundle_path_for() {
     case "$1" in
         1password) echo "/Applications/1Password.app" ;;
+        betterdisplay) echo "/Applications/BetterDisplay.app" ;;
+        brave-browser) echo "/Applications/Brave Browser.app" ;;
         ghostty) echo "/Applications/Ghostty.app" ;;
+        proton-drive) echo "/Applications/Proton Drive.app" ;;
+        proton-mail) echo "/Applications/Proton Mail.app" ;;
+        proton-pass) echo "/Applications/Proton Pass.app" ;;
+        spotify) echo "/Applications/Spotify.app" ;;
         *) echo "" ;;
     esac
 }
