@@ -16,7 +16,10 @@ fi
 readonly CASKS=(
     1password
     1password-cli
+    claude-code
     ghostty
+    jetbrains-toolbox
+    visual-studio-code
 )
 
 #
