@@ -138,8 +138,14 @@ jobs:
           # Every install script claims to be idempotent. This is that claim.
           chezmoi apply --no-tty
 
-          if ! chezmoi verify; then
-            echo "a second apply left the machine out of sync" >&2
+          # Scripts are excluded because chezmoi has no on-disk state to compare
+          # them against, so they never count as settled. `chezmoi verify` fails
+          # here for that reason alone, which makes it useless as a signal.
+          pending="$(chezmoi status --exclude=scripts)"
+
+          if [ -n "${pending}" ]; then
+            echo "a second apply left these out of sync:" >&2
+            echo "${pending}" >&2
             exit 1
           fi
 
