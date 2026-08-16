@@ -94,8 +94,9 @@ jobs:
           for cask in \
             1password 1password-cli betterdisplay brave-browser claude \
             claude-code docker-desktop font-jetbrains-mono-nerd-font ghostty \
-            jetbrains-toolbox logi-options+ macsyzones spotify todoist-app \
-            visual-studio-code proton-drive proton-mail proton-pass; do
+            jetbrains-toolbox logi-options+ macsyzones obsidian spotify \
+            todoist-app visual-studio-code proton-drive proton-mail \
+            proton-pass; do
             echo "Checking ${cask}"
             brew info --cask "${cask}" > /dev/null
           done

@@ -81,7 +81,7 @@ gigabyte together and need a tap, so they qualify. Anything that is one quick
 | `oh_my_posh.sh` | `oh-my-posh` | ✓ | ✓ |
 | `docker.sh` | `docker-desktop` | ✓ | ✓ |
 | `tools.sh` | `eza`, `htop`, `zsh-autosuggestions` | ✓ | ✓ |
-| `applications.sh` | `1password`, `1password-cli`, `betterdisplay`, `brave-browser`, `claude`, `claude-code`, `ghostty`, `jetbrains-toolbox`, `logi-options+`, `macsyzones`, `spotify`, `todoist-app`, `visual-studio-code` | ✓ | ✓ |
+| `applications.sh` | `1password`, `1password-cli`, `betterdisplay`, `brave-browser`, `claude`, `claude-code`, `ghostty`, `jetbrains-toolbox`, `logi-options+`, `macsyzones`, `obsidian`, `spotify`, `todoist-app`, `visual-studio-code` | ✓ | ✓ |
 | `fonts.sh` | `font-jetbrains-mono-nerd-font` | ✓ | ✓ |
 | `personal/applications.sh` | `proton-drive`, `proton-mail`, `proton-pass` | ✓ | — |
 | `optional/dotnet.sh` | `dotnet`, `aspire` | opt-in | opt-in |

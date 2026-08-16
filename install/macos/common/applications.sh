@@ -24,6 +24,7 @@ readonly CASKS=(
     jetbrains-toolbox
     logi-options+
     macsyzones
+    obsidian
     spotify
     todoist-app
     visual-studio-code
@@ -44,6 +45,7 @@ function bundle_path_for() {
         ghostty) echo "/Applications/Ghostty.app" ;;
         logi-options+) echo "/Applications/logioptionsplus.app" ;;
         macsyzones) echo "/Applications/MacsyZones.app" ;;
+        obsidian) echo "/Applications/Obsidian.app" ;;
         spotify) echo "/Applications/Spotify.app" ;;
         todoist-app) echo "/Applications/Todoist.app" ;;
         *) echo "" ;;
