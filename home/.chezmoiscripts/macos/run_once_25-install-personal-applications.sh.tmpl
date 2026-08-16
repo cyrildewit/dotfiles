@@ -1,0 +1,4 @@
+{{ $machine := dig "machine" "personal" . -}}
+{{ if and (eq .chezmoi.os "darwin") (eq $machine "personal") -}}
+{{   include "../install/macos/personal/applications.sh" }}
+{{- end }}
