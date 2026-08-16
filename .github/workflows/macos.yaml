@@ -1,0 +1,146 @@
+name: macOS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/macos.yaml"
+      - "setup.sh"
+      - "install/macos/**"
+      - "home/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/macos.yaml"
+      - "setup.sh"
+      - "install/macos/**"
+      - "home/**"
+
+  # Installing every cask takes a while, so allow running it deliberately.
+  workflow_dispatch:
+
+jobs:
+  bootstrap:
+    name: Bootstrap a clean machine
+    runs-on: macos-14
+
+    steps:
+      - name: Run setup.sh the way the README documents
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PUSH_BRANCH: ${{ github.ref_name }}
+          PR_BRANCH: ${{ github.head_ref }}
+          # Homebrew rate-limits anonymous API calls.
+          HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -Eeuo pipefail
+
+          if [ "${EVENT_NAME}" = "pull_request" ]; then
+            BRANCH_NAME="${PR_BRANCH}"
+          else
+            BRANCH_NAME="${PUSH_BRANCH}"
+          fi
+          export DOTFILES_BRANCH="${BRANCH_NAME}"
+
+          URL="https://raw.githubusercontent.com/${{ github.repository }}/${BRANCH_NAME}/setup.sh"
+          echo "Bootstrapping from ${URL} on branch ${BRANCH_NAME}"
+
+          # Answers to the chezmoi init prompts, in the order they are asked.
+          # A terminal is absent here, so chezmoi reads them from stdin.
+          # The log is kept so later steps can assert which scripts ran.
+          printf 'personal\nfalse\n' \
+            | bash -c "$(curl -fsLS "${URL}")" \
+            | tee "${RUNNER_TEMP}/bootstrap.log"
+          #        │        │
+          #        │        └─ Set up .NET development
+          #        └─ Machine type
+
+      - name: Check the prompt answers were stored
+        run: |
+          set -Eeuo pipefail
+
+          chezmoi data | jq -e '.machine == "personal"' > /dev/null
+          chezmoi data | jq -e '.dotnet == false' > /dev/null
+          echo "machine and dotnet recorded as answered"
+
+      - name: Check the dotfiles were written
+        run: |
+          set -Eeuo pipefail
+
+          for file in \
+            "${HOME}/.zshrc" \
+            "${HOME}/.zprofile" \
+            "${HOME}/.config/git/config" \
+            "${HOME}/.config/git/ignore" \
+            "${HOME}/.config/ghostty/config" \
+            "${HOME}/.config/homebrew/brew.env"; do
+            echo "Checking ${file}"
+            [ -f "${file}" ]
+          done
+
+      - name: Check every package still resolves
+        run: |
+          set -Eeuo pipefail
+
+          # CI is set, so the install scripts ran `brew info` rather than
+          # `brew install`. Anything renamed or removed upstream would already
+          # have failed the bootstrap step; this repeats the check on its own so
+          # a failure names the package instead of a script.
+          for formula in chezmoi gh git zsh htop zsh-autosuggestions; do
+            echo "Checking ${formula}"
+            brew info --formula "${formula}" > /dev/null
+          done
+
+          for cask in \
+            1password 1password-cli betterdisplay brave-browser claude \
+            claude-code docker-desktop font-jetbrains-mono-nerd-font ghostty \
+            jetbrains-toolbox logi-options+ macsyzones spotify todoist-app \
+            visual-studio-code proton-drive proton-mail proton-pass; do
+            echo "Checking ${cask}"
+            brew info --cask "${cask}" > /dev/null
+          done
+
+      - name: Check the personal gate opened
+        run: |
+          set -Eeuo pipefail
+
+          # Answering "personal" should have run install/macos/personal/, which
+          # only resolves casks here, so the log is the evidence.
+          if ! grep --quiet 'Resolving proton-mail' "${RUNNER_TEMP}/bootstrap.log"; then
+            echo "the personal applications script did not run" >&2
+            exit 1
+          fi
+
+          echo "the personal applications script ran"
+
+      - name: Check the opted-out toolchain stayed out
+        run: |
+          set -Eeuo pipefail
+
+          # Answering "false" to the .NET prompt should skip the script entirely
+          # and leave the telemetry opt-outs out of the shell configuration.
+          if grep --quiet 'Resolving dotnet' "${RUNNER_TEMP}/bootstrap.log"; then
+            echo "the .NET script ran despite opting out" >&2
+            exit 1
+          fi
+
+          if grep --quiet DOTNET_CLI_TELEMETRY_OPTOUT "${HOME}/.zshrc"; then
+            echo ".zshrc exports .NET telemetry variables despite opting out" >&2
+            exit 1
+          fi
+
+          echo "the .NET toolchain was correctly skipped"
+
+      - name: Check applying again changes nothing
+        run: |
+          set -Eeuo pipefail
+
+          # Every install script claims to be idempotent. This is that claim.
+          chezmoi apply --no-tty
+
+          if ! chezmoi verify; then
+            echo "a second apply left the machine out of sync" >&2
+            exit 1
+          fi
+
+          echo "the machine is unchanged by a second apply"
