@@ -6,7 +6,9 @@ export XDG_CACHE_HOME={{ .xdgCacheDir }}
 #eval "$(oh-my-posh init zsh --config ~/cyrildewit.omp.json)"
 eval "$(oh-my-posh init zsh)"
 
-source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+autosuggestions="${HOMEBREW_PREFIX:-/opt/homebrew}/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+[ -r "${autosuggestions}" ] && source "${autosuggestions}"
+unset autosuggestions
 
 # User configuration
 
