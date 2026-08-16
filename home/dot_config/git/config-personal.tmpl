@@ -18,7 +18,7 @@
 */ -}}
 {{ if lookPath "op" -}}
 [user]
-    signingkey = {{ onepasswordRead "op://lyiokpptmbyfo6str5tntvaemy/ebrgp4xf4lheweoxh5ap5nh574/public key" }}
+    signingkey = {{ onepasswordRead "op://lyiokpptmbyfo6str5tntvaemy/ebrgp4xf4lheweoxh5ap5nh574/public key" .onepassword_account }}
 
 [gpg]
     format = ssh
