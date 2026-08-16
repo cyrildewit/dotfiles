@@ -3,6 +3,10 @@ export XDG_CONFIG_HOME={{ .xdgConfigDir }}
 export XDG_STATE_HOME={{ .xdgStateDir }}
 export XDG_CACHE_HOME={{ .xdgCacheDir }}
 
+# eza looks in ~/Library/Application Support on macOS and ignores
+# XDG_CONFIG_HOME, so its theme is pointed back at the rest of the config.
+export EZA_CONFIG_DIR="${XDG_CONFIG_HOME}/eza"
+
 #eval "$(oh-my-posh init zsh --config ~/cyrildewit.omp.json)"
 eval "$(oh-my-posh init zsh)"
 
