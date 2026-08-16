@@ -6,6 +6,10 @@
 #   Installs the command-line formulae the shell configuration expects to be
 #   present. Anything that needs a tap, a cask, or post-install setup gets its
 #   own script rather than a line here.
+#
+#   `chezmoi` is listed even though it is what runs this script: a machine
+#   bootstrapped with the standalone installer has a binary nobody maintains,
+#   and this hands it to Homebrew so `brew upgrade` keeps it current.
 
 set -Eeuo pipefail
 
@@ -14,6 +18,7 @@ if [ "${DOTFILES_DEBUG:-}" ]; then
 fi
 
 readonly FORMULAE=(
+    chezmoi
     gh
     git
     zsh

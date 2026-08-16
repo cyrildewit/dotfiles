@@ -44,7 +44,7 @@ existed still applies, defaulting to `personal`.
 | --- | --- | :-: | :-: |
 | `command_line_tools.sh` | Xcode Command Line Tools | ✓ | ✓ |
 | `homebrew.sh` | Homebrew | ✓ | ✓ |
-| `dependencies.sh` | `gh`, `git`, `zsh` | ✓ | ✓ |
+| `dependencies.sh` | `chezmoi`, `gh`, `git`, `zsh` | ✓ | ✓ |
 | `oh_my_posh.sh` | `oh-my-posh` | ✓ | ✓ |
 | `docker.sh` | `docker-desktop` | ✓ | ✓ |
 | `tools.sh` | `htop`, `zsh-autosuggestions` | ✓ | ✓ |
