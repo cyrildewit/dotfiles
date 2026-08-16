@@ -32,6 +32,7 @@ if [ "${DOTFILES_DEBUG:-}" ]; then
 fi
 
 readonly DOTFILES_REPO_URL="${DOTFILES_REPO_URL:-https://github.com/cyrildewit/dotfiles.git}"
+readonly DOTFILES_BRANCH="${DOTFILES_BRANCH:-}"
 readonly HOMEBREW_INSTALLER_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
 
 #
@@ -166,11 +167,18 @@ function bootstrap_os() {
 #   `init` prompts for the machine type and the optional toolchains, then
 #   `--apply` runs the install scripts.
 #
+#   Without a terminal chezmoi reads its answers from stdin instead, which is
+#   how CI drives the prompts.
+#
 function apply_dotfiles() {
     local options=()
 
     if ! is_tty; then
         options+=(--no-tty)
+    fi
+
+    if [ -n "${DOTFILES_BRANCH}" ]; then
+        options+=(--branch "${DOTFILES_BRANCH}")
     fi
 
     echo "Applying ${DOTFILES_REPO_URL}."
