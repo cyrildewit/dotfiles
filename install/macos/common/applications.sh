@@ -22,7 +22,10 @@ readonly CASKS=(
     claude-code
     ghostty
     jetbrains-toolbox
+    logi-options+
+    macsyzones
     spotify
+    todoist-app
     visual-studio-code
 )
 
@@ -39,7 +42,10 @@ function bundle_path_for() {
         betterdisplay) echo "/Applications/BetterDisplay.app" ;;
         brave-browser) echo "/Applications/Brave Browser.app" ;;
         ghostty) echo "/Applications/Ghostty.app" ;;
+        logi-options+) echo "/Applications/logioptionsplus.app" ;;
+        macsyzones) echo "/Applications/MacsyZones.app" ;;
         spotify) echo "/Applications/Spotify.app" ;;
+        todoist-app) echo "/Applications/Todoist.app" ;;
         *) echo "" ;;
     esac
 }

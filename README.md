@@ -48,7 +48,7 @@ existed still applies, defaulting to `personal`.
 | `oh_my_posh.sh` | `oh-my-posh` | ✓ | ✓ |
 | `docker.sh` | `docker-desktop` | ✓ | ✓ |
 | `tools.sh` | `htop`, `zsh-autosuggestions` | ✓ | ✓ |
-| `applications.sh` | `1password`, `1password-cli`, `betterdisplay`, `brave-browser`, `claude`, `claude-code`, `ghostty`, `jetbrains-toolbox`, `spotify`, `visual-studio-code` | ✓ | ✓ |
+| `applications.sh` | `1password`, `1password-cli`, `betterdisplay`, `brave-browser`, `claude`, `claude-code`, `ghostty`, `jetbrains-toolbox`, `logi-options+`, `macsyzones`, `spotify`, `todoist-app`, `visual-studio-code` | ✓ | ✓ |
 | `fonts.sh` | `font-jetbrains-mono-nerd-font` | ✓ | ✓ |
 | `personal/applications.sh` | `proton-drive`, `proton-mail`, `proton-pass` | ✓ | — |
 
