@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 # @file install/macos/common/homebrew.sh
-# @brief Bootstrap Homebrew on macOS.
+# @brief Make sure Homebrew exists before anything else needs it.
 # @description
-#   Installs Homebrew when it is missing and puts the resulting brew on PATH so
-#   later steps in the same script can use it.
+#   Runs the upstream installer when brew is absent, then exports the resulting
+#   environment so the rest of this run can call brew without a login shell.
 
 set -Eeuo pipefail
 

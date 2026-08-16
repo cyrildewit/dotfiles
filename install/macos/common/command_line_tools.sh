@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # @file install/macos/common/command_line_tools.sh
-# @brief Install the Xcode Command Line Tools on macOS.
+# @brief Make sure a developer toolchain is active on macOS.
 # @description
-#   Triggers the Command Line Tools installer when no developer directory is
-#   active, then waits for it to finish. The installer runs in its own GUI
-#   dialog, so this script polls instead of returning early.
+#   Requests the Command Line Tools when xcode-select reports no active
+#   developer directory. macOS hands the install to a separate GUI process that
+#   returns immediately, so completion is detected by polling.
 
 set -Eeuo pipefail
 
