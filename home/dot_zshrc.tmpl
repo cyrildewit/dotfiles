@@ -12,9 +12,12 @@ unset autosuggestions
 
 # User configuration
 
+{{ if dig "dotnet" false . -}}
 export ASPIRE_CLI_TELEMETRY_OPTOUT=1
 export TESTINGPLATFORM_TELEMETRY_OPTOUT=1
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
+
+{{ end -}}
 
 # enable color support of ls, less and man, and also add handy aliases
 #f [ -x /usr/bin/dircolors ]; then
