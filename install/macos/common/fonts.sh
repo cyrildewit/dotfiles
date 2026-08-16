@@ -18,6 +18,15 @@ readonly FONT_CASKS=(
 )
 
 #
+# @description Report whether this is a continuous integration run.
+#   CI resolves casks rather than installing them. That still catches a
+#   renamed or misspelled token without paying for the download.
+#
+function is_ci() {
+    [ "${CI:-false}" = "true" ]
+}
+
+#
 # @description Report whether Homebrew already manages a cask.
 # @arg $1 string Cask token.
 #
@@ -38,6 +47,12 @@ function install_fonts() {
 
     if [[ ${#pending[@]} -eq 0 ]]; then
         echo "Fonts are already installed."
+        return 0
+    fi
+
+    if is_ci; then
+        echo "Resolving: ${pending[*]}"
+        brew info --cask "${pending[@]}" > /dev/null
         return 0
     fi
 

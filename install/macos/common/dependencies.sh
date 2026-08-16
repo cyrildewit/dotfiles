@@ -25,6 +25,15 @@ readonly FORMULAE=(
 )
 
 #
+# @description Report whether this is a continuous integration run.
+#   CI resolves packages rather than installing them. That still catches a
+#   renamed or misspelled token without paying for the download.
+#
+function is_ci() {
+    [ "${CI:-false}" = "true" ]
+}
+
+#
 # @description Report whether a formula is already present locally.
 # @arg $1 string Formula name.
 # @exitcode 0 If the formula is installed.
@@ -47,6 +56,12 @@ function install_missing_formulae() {
 
     if [[ ${#pending[@]} -eq 0 ]]; then
         echo "Homebrew dependencies are already present."
+        return 0
+    fi
+
+    if is_ci; then
+        echo "Resolving: ${pending[*]}"
+        brew info "${pending[@]}" > /dev/null
         return 0
     fi
 

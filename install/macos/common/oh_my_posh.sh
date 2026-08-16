@@ -17,6 +17,15 @@ readonly TAP="jandedobbeleer/oh-my-posh"
 readonly FORMULA="jandedobbeleer/oh-my-posh/oh-my-posh"
 
 #
+# @description Report whether this is a continuous integration run.
+#   CI resolves the formula rather than installing it. The tap and the trust
+#   still happen, since without them there is nothing to resolve against.
+#
+function is_ci() {
+    [ "${CI:-false}" = "true" ]
+}
+
+#
 # @description Report whether the prompt is already on PATH.
 #   Checked directly rather than through brew, which refuses to answer
 #   questions about an untrusted tap.
@@ -55,6 +64,13 @@ function install_oh_my_posh() {
 
     add_tap
     trust_formula
+
+    if is_ci; then
+        echo "Resolving ${FORMULA}."
+        brew info "${FORMULA}" > /dev/null
+        return 0
+    fi
+
     brew install "${FORMULA}"
 }
 

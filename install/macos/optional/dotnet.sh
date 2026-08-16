@@ -21,6 +21,15 @@ readonly ASPIRE_TAP="microsoft/aspire"
 readonly ASPIRE_CASK="microsoft/aspire/aspire"
 
 #
+# @description Report whether this is a continuous integration run.
+#   CI resolves the packages rather than installing them. The tap and the
+#   trust still happen, since without them there is nothing to resolve against.
+#
+function is_ci() {
+    [ "${CI:-false}" = "true" ]
+}
+
+#
 # @description Report whether a formula is already present locally.
 # @arg $1 string Formula name.
 # @exitcode 0 If the formula is installed.
@@ -44,6 +53,12 @@ function has_cask() {
 function install_sdk() {
     if has_formula "${SDK_FORMULA}"; then
         echo "The .NET SDK is already installed."
+        return 0
+    fi
+
+    if is_ci; then
+        echo "Resolving ${SDK_FORMULA}."
+        brew info "${SDK_FORMULA}" > /dev/null
         return 0
     fi
 
@@ -81,6 +96,12 @@ function install_aspire() {
 
     add_tap
     trust_cask
+
+    if is_ci; then
+        echo "Resolving ${ASPIRE_CASK}."
+        brew info --cask "${ASPIRE_CASK}" > /dev/null
+        return 0
+    fi
 
     echo "Installing ${ASPIRE_CASK}."
     brew install --cask "${ASPIRE_CASK}"
