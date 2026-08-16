@@ -1,0 +1,15 @@
+# @file home/dot_aliases
+# @brief Shell aliases sourced by every interactive shell.
+# @description
+#   Sourced from .zshrc. Anything that depends on an optional tool defines a
+#   portable version first and overrides it only once the tool is found, so a
+#   machine without that tool still gets a working alias.
+
+alias l="ls -laF"
+
+# eza replaces ls with something that groups directories, colours by file type,
+# and turns paths into terminal hyperlinks. Icons need a Nerd Font, which the
+# Ghostty configuration in this repository asks for by name.
+if command -v eza &> /dev/null; then
+    alias l="eza -la --icons --group-directories-first --hyperlink"
+fi
