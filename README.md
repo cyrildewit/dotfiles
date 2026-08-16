@@ -1,6 +1,22 @@
 # dotfiles
 My dotfiles and personal preferences managed using Chezmoi
 
+## Setting up a new machine
+
+```sh
+bash -c "$(curl -fsLS https://raw.githubusercontent.com/cyrildewit/dotfiles/main/setup.sh)"
+```
+
+`setup.sh` installs Homebrew, installs chezmoi with it, and then runs
+`chezmoi init --apply`, which clones this repository, asks its questions and
+runs the install scripts. Running it on a machine that is already set up
+changes nothing.
+
+chezmoi is installed through Homebrew rather than the standalone installer on
+purpose. The standalone installer leaves a binary in `~/.local/bin` that
+nothing updates afterwards; letting Homebrew own it means `brew upgrade` keeps
+it current, and `dependencies.sh` lists the same formula so the two agree.
+
 ## Install scripts
 
 Machine setup lives in `install/<os>/...` as plain, standalone shell scripts.
