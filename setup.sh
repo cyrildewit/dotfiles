@@ -185,6 +185,9 @@ function main() {
     apply_dotfiles
 }
 
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+# `bash -c "$(curl ...)"` leaves BASH_SOURCE empty, which `set -u` treats as an
+# unbound variable. Falling back to $0 keeps that path working while still
+# staying quiet when the file is sourced, as the tests do.
+if [[ "${BASH_SOURCE[0]:-$0}" == "${0}" ]]; then
     main
 fi
