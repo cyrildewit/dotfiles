@@ -14,6 +14,7 @@ if [ "${DOTFILES_DEBUG:-}" ]; then
 fi
 
 readonly FORMULAE=(
+    htop
     zsh-autosuggestions
 )
 
