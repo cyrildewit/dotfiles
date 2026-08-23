@@ -1,0 +1,3 @@
+{{ if eq .chezmoi.os "windows" -}}
+{{   include "../scripts/windows/link-shared-skills.ps1" }}
+{{- end }}

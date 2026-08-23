@@ -64,16 +64,22 @@ shell — lintable, no Go template syntax in it — and the guard lives in the
 shim:
 
 ```
-scripts/unix/link-shared-skills.sh                              plain bash
-home/.chezmoiscripts/run_after_40-link-shared-skills.sh.tmpl    shim, carries the guard
+scripts/macos/link-shared-skills.sh                                   plain bash
+scripts/windows/link-shared-skills.ps1                                plain PowerShell
+home/.chezmoiscripts/macos/run_after_40-link-shared-skills.sh.tmpl    shim, carries the guard
+home/.chezmoiscripts/windows/run_after_40-link-shared-skills.ps1.tmpl shim, carries the guard
 ```
 
-The shim guards on `ne .chezmoi.os "windows"` and `include`s the body, exactly
-as `.chezmoiscripts/macos/*.tmpl` include from `install/`. The Windows half
-becomes a sibling `run_after_40-link-shared-skills.ps1.tmpl` including
-`scripts/windows/link-shared-skills.ps1`, in phase 3. chezmoi picks the
-interpreter from the file extension, so only one of the two ever renders
-non-empty and neither needs to know about the other.
+The shim directory mirrors the body directory, the same way
+`.chezmoiscripts/macos/*.tmpl` include from `install/macos/`. Each shim guards
+on its own OS and `include`s its body. chezmoi picks the interpreter from the
+file extension, so only one of the two ever renders non-empty and neither needs
+to know about the other.
+
+The Windows body uses junctions rather than symlinks, since a junction needs no
+privilege and every pool entry is a directory. It also deletes links through
+`[IO.Directory]::Delete`, because `Remove-Item` can follow a junction and delete
+what it points at, which here would be skills inside the source tree.
 
 `run_after_` rather than `run_once_`, so the rename invalidates no state hash.
 
