@@ -1,0 +1,3 @@
+{{ if eq .chezmoi.os "windows" -}}
+{{   include "../install/windows/common/scoop.ps1" }}
+{{- end }}
