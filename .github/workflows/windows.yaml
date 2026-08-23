@@ -139,6 +139,7 @@ jobs:
               'git'
               'brave'
               'bruno'
+              'claude'
               'claude-code'
               'eza'
               'nodejs-lts'

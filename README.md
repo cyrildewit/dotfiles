@@ -61,7 +61,7 @@ were installed by hand rather than through Homebrew.
 | `scoop.ps1` | scoop | ✓ | ✓ |
 | `dependencies.ps1` | `1password-cli`, `chezmoi`, `gh`, `git` | ✓ | ✓ |
 | `tools.ps1` | `claude-code`, `eza`, `nodejs-lts`, `vim` | ✓ | ✓ |
-| `applications.ps1` | `brave`, `bruno` | ✓ | ✓ |
+| `applications.ps1` | `brave`, `bruno`, `claude` | ✓ | ✓ |
 | `onepassword.ps1` | `AgileBits.1Password`, through winget | ✓ | ✓ |
 | `fonts.ps1` | `JetBrainsMono-NF`, `JetBrainsMono-NF-Mono`, `JetBrainsMono-NF-Propo` | ✓ | ✓ |
 

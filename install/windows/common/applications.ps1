@@ -21,6 +21,14 @@
     what carries the profile across upgrades. Nothing in this repository reads
     either path.
 
+    claude is the counterpart to the claude cask, and diverges the same way.
+    The cask runs Anthropic's installer. The manifest downloads the nupkg that
+    installer would have unpacked, extracts lib\net45 out of it, and puts a
+    Start menu shortcut on claude.exe. There is no `persist` entry, so nothing
+    in the app directory is carried across upgrades, and the app keeps its
+    profile somewhere outside the scoop root. This is the desktop app; the CLI
+    is the claude-code package tools.ps1 installs.
+
     The list is shorter than the macOS one by choice rather than by constraint.
     Some of those casks are macOS-only (betterdisplay, ghostty, macsyzones), and
     extras carries most of the rest, so anything else wanted is a line here. The
@@ -53,6 +61,7 @@ $Buckets = @(
 $Packages = @(
     'brave'
     'bruno'
+    'claude'
 )
 
 function Get-ScoopRoot {
