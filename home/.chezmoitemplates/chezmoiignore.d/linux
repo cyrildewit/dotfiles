@@ -2,3 +2,7 @@
 
 # Homebrew config is macOS-only here.
 .config/homebrew
+
+# ~/Library is a macOS location. The MacsyZones symlinks under it are the only
+# thing in the source tree that targets it.
+Library

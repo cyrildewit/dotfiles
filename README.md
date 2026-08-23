@@ -103,3 +103,26 @@ Add `before_` or `after_` to place a script around the dotfile updates
 (`run_once_before_`, `run_after_`, …). Without either, it runs in between,
 interleaved with the files. Scripts execute in ASCII order of their names —
 that is what the numeric prefixes are for.
+
+## Application config
+
+### MacsyZones
+
+Layouts and settings are synced. Per-machine state is not, since it keys on
+display IDs and Space numbers that mean nothing on another Mac.
+
+| File | Synced |
+| --- | :-: |
+| `UserLayouts.json` | ✓ |
+| `AppSettings.json` | ✓ |
+| `SpaceLayoutPreferences.json` | — |
+| `UpdateState.json` | — |
+| `OnboardingState.json` | — |
+
+The canonical copies live in `home/dot_config/macsyzones/` and are symlinked
+into `~/Library/Application Support/MeowingCat.MacsyZones/`, the same adapter
+the shared skills pool uses. MacsyZones writes through the symlink, so zones
+drawn in its UI land in the working tree.
+
+Do not give that directory the `exact_` attribute. It would delete the unsynced
+files above.

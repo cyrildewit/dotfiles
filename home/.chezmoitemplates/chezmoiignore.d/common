@@ -2,3 +2,8 @@
 
 # Canonical skills storage: source-only, exposed via the ~/.agents symlink adapter.
 .config/agents
+
+# Canonical MacsyZones config: source-only, exposed via symlinks under
+# ~/Library/Application Support. MacsyZones writes non-atomically, so it saves
+# through the link and edits made in its UI land back in this repository.
+.config/macsyzones
