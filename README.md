@@ -122,11 +122,30 @@ were installed by hand rather than through Homebrew.
 | Script | Installs | Personal | Work |
 | --- | --- | :-: | :-: |
 | `scoop.ps1` | scoop | ✓ | ✓ |
+| `dependencies.ps1` | `chezmoi`, `git` | ✓ | ✓ |
+| `tools.ps1` | `bruno`, `claude-code`, `nodejs-lts`, `vim` | ✓ | ✓ |
 
 `scoop.ps1` is the counterpart to `homebrew.sh`. On a machine bootstrapped with
 `setup.ps1` it does nothing, since that script installed scoop before chezmoi
 existed to run anything. It is here for the other way in, a `chezmoi apply` on a
 machine that got chezmoi some other way and has no package manager yet.
+
+The other two split the way the macOS scripts do. Something in this repository
+breaks without `dependencies.ps1` and nothing breaks without `tools.ps1`.
+chezmoi needs git to clone and update the source, and `dot_config/git` is
+written for it, so git is a dependency. Nothing here reads bruno, node or vim.
+The macOS dependency list also has gh and zsh, and neither is a port. Nothing on
+a Windows host reads the zsh configuration, and gh is not installed on that
+machine.
+
+scoop has no formula and cask split, so bruno sits among three command-line
+packages in `tools.ps1` despite being a GUI app. Once there are several apps
+they earn an `applications.ps1` of their own.
+
+bruno is also the only package outside scoop's `main` bucket, so `tools.ps1`
+adds `extras` first. Cloning a bucket needs git, which is what makes the order
+matter. `dependencies.ps1` is a `run_once_before_` script, so it runs ahead of
+every unprefixed one whatever the numbers say.
 
 One wrinkle has no macOS equivalent. The scoop installer writes the shims to the
 user PATH, and the running chezmoi never re-reads that, so a scoop installed
