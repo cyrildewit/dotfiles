@@ -116,7 +116,7 @@ jobs:
               }
           }
 
-      - name: Check every package still resolves
+      - name: Check every scoop package still resolves
         run: |
           $ErrorActionPreference = 'Stop'
           $PSNativeCommandUseErrorActionPreference = $true
@@ -155,6 +155,30 @@ jobs:
                   throw "no bucket carries a manifest for $package"
               }
           }
+
+      - name: Check the winget package still resolves
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
+
+          # onepassword.ps1 could not resolve this during the bootstrap. winget
+          # comes with App Installer, App Installer comes from the Microsoft
+          # Store, and a Windows Server image carries neither, so the runner has
+          # no winget at all. What is left to check is the manifest, in the
+          # repository winget would resolve the name against.
+          #
+          # The path spells out the package id: initial, publisher, name.
+          $manifest = 'manifests/a/AgileBits/1Password'
+
+          try {
+              gh api "repos/microsoft/winget-pkgs/contents/$manifest" | Out-Null
+          } catch {
+              throw "microsoft/winget-pkgs no longer carries $manifest for AgileBits.1Password"
+          }
+
+          Write-Host 'AgileBits.1Password still has a manifest'
 
       - name: Check nothing macOS-shaped landed
         run: |
