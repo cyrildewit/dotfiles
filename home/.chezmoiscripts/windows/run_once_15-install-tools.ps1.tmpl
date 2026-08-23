@@ -1,0 +1,3 @@
+{{ if eq .chezmoi.os "windows" -}}
+{{   include "../install/windows/common/tools.ps1" }}
+{{- end }}
