@@ -35,6 +35,7 @@ $Packages = @(
     'bruno'
     'claude'
     'jetbrains-toolbox'
+    'vscode'
 )
 
 function Get-ScoopRoot {

@@ -145,6 +145,7 @@ jobs:
               'jetbrains-toolbox'
               'nodejs-lts'
               'vim'
+              'vscode'
               'JetBrainsMono-NF'
               'JetBrainsMono-NF-Mono'
               'JetBrainsMono-NF-Propo'
