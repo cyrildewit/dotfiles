@@ -2,6 +2,10 @@
   "tui": "fullscreen",
   "theme": "auto",
   "includeCoAuthoredBy": false,
+  "skipWorkflowUsageWarning": true,
+  "enabledPlugins": {
+    "skill-creator@claude-plugins-official": true
+  },
   "env": {
     "DISABLE_TELEMETRY": "1",
     "DISABLE_ERROR_REPORTING": "1"
@@ -16,8 +20,7 @@
       "Read(~/.aws/**)",
       "Read(**/secrets/**)",
       "Read(**/*.pem)",
-      "Edit(.env*)",
-      "Write(.env*)"
+      "Edit(.env*)"
     ],
     "ask": [
       "Bash(git push --force:*)",
