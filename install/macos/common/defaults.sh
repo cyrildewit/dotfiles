@@ -8,7 +8,7 @@
 #   `defaults_*` function, so a preference can be changed or dropped without
 #   disturbing the rest, and `main` decides what actually runs.
 #
-#   No preferences are set yet. Add a `defaults_<area>` function, call it from
+#   To add a preference, write a `defaults_<area>` function, call it from
 #   `main`, and name the applications that need a restart afterwards.
 
 set -Eeuo pipefail
@@ -41,6 +41,14 @@ function restart_applications() {
 }
 
 #
+# @description Configure the menu bar and Control Center.
+#
+function defaults_ui() {
+    # Show the battery charge as a number, not just the icon
+    defaults -currentHost write com.apple.controlcenter BatteryShowPercentage -bool true
+}
+
+#
 # @description Apply every preference group.
 #
 function main() {
@@ -49,7 +57,9 @@ function main() {
         return 0
     fi
 
-    echo "No defaults are configured yet."
+    defaults_ui
+
+    restart_applications ControlCenter
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
