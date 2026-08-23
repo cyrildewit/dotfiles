@@ -13,14 +13,14 @@
     Unlike setup.sh there is no `bootstrap_os` here. This file only ever runs on
     one operating system, so it needs none of that structure.
 
-    scoop rather than winget. Both work on the target machine, but scoop
-    installs per-user and never needs elevation, which is what an
-    Intune-managed laptop can be relied on to allow; it is also already the
-    package manager in use there. Swapping it means rewriting
-    `Install-Chezmoi` and `Install-Scoop` and nothing else.
+    scoop rather than winget. scoop installs per-user and needs no elevation,
+    which is the most a managed machine can be relied on to allow, and it needs
+    nothing from the Microsoft Store to exist first. Swapping it means rewriting
+    `Install-Chezmoi` and `Install-Scoop` and nothing else. The install scripts
+    reach for winget once, in `onepassword.ps1`, for a package no bucket carries.
 
-    Written for Windows PowerShell 5.1, which is the only PowerShell on the
-    target machine. That rules out `pwsh`-era conveniences: no ternaries, no
+    Written for Windows PowerShell 5.1, the one PowerShell every Windows machine
+    has. That rules out `pwsh`-era conveniences: no ternaries, no
     null-coalescing, and no `$PSNativeCommandUseErrorActionPreference` — a
     failing executable does not throw here, so it is checked by hand.
 
@@ -77,8 +77,8 @@ function Test-Interactive {
 function Test-Administrator {
     <#
     .DESCRIPTION
-        Report whether this session is elevated. Only CI is; the target laptop
-        runs unelevated and MDM-managed.
+        Report whether this session is elevated, which is the one thing the
+        scoop installer needs told rather than left to discover.
     #>
 
     $identity = [Security.Principal.WindowsIdentity]::GetCurrent()

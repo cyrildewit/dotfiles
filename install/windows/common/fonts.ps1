@@ -31,8 +31,7 @@
     chezmoi runs every run_once_before_ script ahead of the unprefixed ones
     whatever their numbers say. A CI run gets git from the runner image instead.
 
-    Written for Windows PowerShell 5.1, the only PowerShell on the target
-    machine. No ternaries and no null-coalescing.
+    Written for Windows PowerShell 5.1. No ternaries and no null-coalescing.
 
     Reads DOTFILES_DEBUG to trace every statement and CI to resolve packages
     instead of installing them, the same as its bash counterpart.

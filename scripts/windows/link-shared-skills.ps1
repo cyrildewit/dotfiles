@@ -5,8 +5,8 @@
 # entry, and prunes dangling pool links left after a skill is removed from the pool.
 #
 # Junctions rather than symlinks: a symlink needs Developer Mode or
-# SeCreateSymbolicLinkPrivilege, and a managed machine grants neither. Junctions need
-# no privilege, and every pool entry is a directory.
+# SeCreateSymbolicLinkPrivilege, neither of which is guaranteed. Junctions need no
+# privilege, and every pool entry is a directory.
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'

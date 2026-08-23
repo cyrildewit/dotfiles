@@ -23,8 +23,7 @@
     gives about Homebrew: the bootstrap has to work on a machine where this
     repository has not been cloned, so it cannot include anything from it.
 
-    Written for Windows PowerShell 5.1, the only PowerShell on the target
-    machine. No ternaries and no null-coalescing.
+    Written for Windows PowerShell 5.1. No ternaries and no null-coalescing.
 
     Reads DOTFILES_DEBUG from the environment to trace every statement, the
     same as its bash counterparts.
@@ -58,8 +57,8 @@ function Test-ScoopInstalled {
 function Test-Administrator {
     <#
     .DESCRIPTION
-        Report whether this session is elevated. Only CI is; the target laptop
-        runs unelevated and MDM-managed.
+        Report whether this session is elevated, which is the one thing the
+        scoop installer needs told rather than left to discover.
     #>
 
     $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
