@@ -139,6 +139,7 @@ jobs:
               'git'
               'bruno'
               'claude-code'
+              'eza'
               'nodejs-lts'
               'vim'
               'JetBrainsMono-NF'

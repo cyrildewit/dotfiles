@@ -9,8 +9,13 @@
 .zprofile
 .aliases
 
-# Ghostty is macOS-only, and eza is not installed here.
+# Ghostty is macOS-only.
 .config/ghostty
+
+# eza is installed here, but its theme is not. On Windows eza reads
+# %APPDATA%\eza rather than ~/.config, and only EZA_CONFIG_DIR redirects it,
+# which dot_zshrc sets and no shell on a Windows host reads. The vendored theme
+# restates eza's compiled-in default, so nothing is lost by skipping it.
 .config/eza
 
 # ~/Library is a macOS location. The MacsyZones symlinks under it are the only

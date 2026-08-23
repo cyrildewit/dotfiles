@@ -123,7 +123,7 @@ were installed by hand rather than through Homebrew.
 | --- | --- | :-: | :-: |
 | `scoop.ps1` | scoop | ✓ | ✓ |
 | `dependencies.ps1` | `1password-cli`, `chezmoi`, `gh`, `git` | ✓ | ✓ |
-| `tools.ps1` | `bruno`, `claude-code`, `nodejs-lts`, `vim` | ✓ | ✓ |
+| `tools.ps1` | `bruno`, `claude-code`, `eza`, `nodejs-lts`, `vim` | ✓ | ✓ |
 | `fonts.ps1` | `JetBrainsMono-NF`, `JetBrainsMono-NF-Mono`, `JetBrainsMono-NF-Propo` | ✓ | ✓ |
 
 `scoop.ps1` is the counterpart to `homebrew.sh`. On a machine bootstrapped with

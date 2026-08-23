@@ -40,6 +40,7 @@ $Buckets = @(
 $Packages = @(
     'bruno'
     'claude-code'
+    'eza'
     'nodejs-lts'
     'vim'
 )
