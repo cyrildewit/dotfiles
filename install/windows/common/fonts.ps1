@@ -10,31 +10,18 @@
     default without saying so.
 
     Homebrew ships the whole JetBrains Mono Nerd Font family as one cask. The
-    nerd-fonts bucket splits it into three manifests, one per variant, each
-    installing the files its own name matches. All three are listed so the
-    family is the same on both systems and no application asks for a variant
-    that is not there. The cost is the same zip downloaded three times, since
-    scoop caches per app rather than per url.
-
-    NFM, the monospace variant, is the one this repository names anywhere.
-    home/dot_config/ghostty/config asks for `JetBrainsMono NFM Regular`, though
-    that file never reaches a Windows host, since chezmoiignore.d/windows drops
-    it.
+    nerd-fonts bucket splits it into three manifests, one per variant, and all
+    three are listed so the family is the same on both systems. The cost is the
+    same zip downloaded three times, since scoop caches per app rather than per
+    url.
 
     The manifests install per user and register the font under HKCU, so this
     needs no elevation on Windows 10 1809 or later. Anything older can only
     install a font for all users, and the manifest aborts and says so rather
     than half-installing.
 
-    nerd-fonts is a bucket beyond the one scoop ships with. Adding it clones it
-    with git, which dependencies.ps1 has installed by the time this runs, since
-    chezmoi runs every run_once_before_ script ahead of the unprefixed ones
-    whatever their numbers say. A CI run gets git from the runner image instead.
-
-    Written for Windows PowerShell 5.1. No ternaries and no null-coalescing.
-
-    Reads DOTFILES_DEBUG to trace every statement and CI to resolve packages
-    instead of installing them, the same as its bash counterpart.
+    The nerd-fonts bucket is cloned with git, which dependencies.ps1 installs
+    first. A CI run gets git from the runner image instead.
 #>
 
 Set-StrictMode -Version Latest
@@ -65,20 +52,18 @@ function Get-ScoopRoot {
         return $env:SCOOP
     }
 
-    # USERPROFILE rather than $HOME, for the reason the skills linker gives:
-    # $HOME is built from HOMEDRIVE and HOMEPATH, which a managed machine can
-    # point at a network share.
+    # USERPROFILE rather than $HOME, which is built from HOMEDRIVE and HOMEPATH
+    # and can point at a network share on a managed machine.
     return (Join-Path $env:USERPROFILE 'scoop')
 }
 
 function Enable-Scoop {
     <#
     .DESCRIPTION
-        Put the scoop shims on PATH for the remainder of this script.
-
-        Repeated from scoop.ps1 rather than shared with it. The scripts under
-        install/ are standalone, and chezmoi runs them as siblings, so a scoop
-        that script installed mid-apply is not on the PATH this one inherited.
+        Put the scoop shims on PATH for the remainder of this script. Repeated
+        from scoop.ps1 rather than shared with it: chezmoi runs the install
+        scripts as siblings, so a scoop that script installed mid-apply is not
+        on the PATH this one inherited.
     #>
 
     $shims = Join-Path (Get-ScoopRoot) 'shims'
@@ -96,7 +81,7 @@ function Test-CI {
     <#
     .DESCRIPTION
         Report whether this is a continuous integration run. CI resolves
-        packages rather than installing them. That still catches a renamed or
+        packages rather than installing them, which still catches a renamed or
         misspelled name without paying for the download.
     #>
 
@@ -106,11 +91,9 @@ function Test-CI {
 function Test-BucketAdded {
     <#
     .DESCRIPTION
-        Report whether a bucket is already known.
-
-        Read off disk rather than from `scoop bucket list`, whose output has
-        been a list of names in some versions and a table of objects in others.
-        A bucket is a clone under the scoop root either way.
+        Report whether a bucket is already known. Read off disk rather than
+        from `scoop bucket list`, whose output has been a list of names in some
+        versions and a table of objects in others.
     #>
 
     param([Parameter(Mandatory = $true)][string] $Name)
@@ -147,17 +130,14 @@ function Add-MissingBuckets {
 function Test-PackageInstalled {
     <#
     .DESCRIPTION
-        Report whether a package is already present.
+        Report whether scoop installed a package. Read off disk rather than
+        from `scoop list`, which prints a formatted table and, being a script
+        rather than a process, leaves $LASTEXITCODE saying nothing about how it
+        went.
 
-        Read off disk rather than from `scoop list`, which prints a formatted
-        table and, being a script rather than a process, leaves $LASTEXITCODE
-        saying nothing about how it went. An app directory with a `current`
-        link is what an installed package is.
-
-        This answers whether scoop installed the font, not whether the font is
-        on the machine. A family dropped into the user font directory by hand
-        is invisible here and gets installed again alongside itself, which
-        costs a download and changes nothing.
+        A family dropped into the user font directory by hand is invisible
+        here and gets installed again alongside itself, which costs a download
+        and changes nothing.
     #>
 
     param([Parameter(Mandatory = $true)][string] $Name)
@@ -171,14 +151,11 @@ function Test-ManifestKnown {
     <#
     .DESCRIPTION
         Report whether an added bucket carries a manifest for a package, which
-        is what `brew info` is used to answer on the macOS side.
-
-        Read off disk rather than from `scoop cat` or `scoop info`. Both print
-        through the host in some versions rather than down the pipeline, and
-        host output is nothing a script can capture, so a check built on it
-        would report every package missing. A manifest is a json file in a
-        bucket clone. Official buckets keep them under `bucket` and third-party
-        ones sometimes at the root, so both are searched.
+        is what `brew info` answers on the macOS side. Read off disk rather
+        than from `scoop cat` or `scoop info`, which print through the host in
+        some versions rather than down the pipeline, and host output is nothing
+        a script can capture. Official buckets keep manifests under `bucket`
+        and third-party ones sometimes at the root, so both are searched.
     #>
 
     param([Parameter(Mandatory = $true)][string] $Name)
@@ -233,11 +210,6 @@ function Install-MissingPackages {
 }
 
 function Invoke-Main {
-    <#
-    .DESCRIPTION
-        Ensure the fonts are installed.
-    #>
-
     Enable-Scoop
 
     if (-not (Get-Command -Name 'scoop' -ErrorAction SilentlyContinue)) {
@@ -248,8 +220,8 @@ function Invoke-Main {
     Install-MissingPackages
 }
 
-# Dot-sourcing the file gets the functions and nothing else, so it can be
-# tested without installing anything on the machine running the tests.
+# Dot-sourcing gets the functions and nothing else, so the tests can load this
+# file without installing anything on the machine running them.
 if ($MyInvocation.InvocationName -ne '.') {
     Invoke-Main
 }

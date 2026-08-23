@@ -5,57 +5,18 @@
     Applications the dotfiles expect to find.
 
 .DESCRIPTION
-    The Windows counterpart to install/macos/common/applications.sh. Installs
-    the GUI applications wanted on the machine.
+    The Windows counterpart to install/macos/common/applications.sh. scoop has
+    no formula and cask split, so keeping the GUI applications apart from the
+    command-line packages in tools.ps1 is a convention rather than something
+    scoop enforces.
 
-    scoop has no formula and cask split, so this file is a convention rather
-    than something scoop enforces: the same `scoop install` that tools.ps1 runs,
-    pointed at a different list. It exists so the GUI applications do not crowd
-    out the command-line packages, the way the macOS side keeps its casks apart
-    from its formulae.
+    Every entry needs the extras bucket, which is cloned with git. That comes
+    from dependencies.ps1, since chezmoi runs every run_once_before_ script
+    ahead of the unprefixed ones whatever their numbers say. A CI run gets git
+    from the runner image instead.
 
-    brave is the counterpart to the brave-browser cask, and the two installs are
-    not the same shape. The cask runs Brave's own installer. The manifest
-    unpacks a portable zip and points --user-data-dir back into the app
-    directory, with `persist` mapping it out to scoop\persist\brave, which is
-    what carries the profile across upgrades. Nothing in this repository reads
-    either path.
-
-    claude is the counterpart to the claude cask, and diverges the same way.
-    The cask runs Anthropic's installer. The manifest downloads the nupkg that
-    installer would have unpacked, extracts lib\net45 out of it, and puts a
-    Start menu shortcut on claude.exe. There is no `persist` entry, so nothing
-    in the app directory is carried across upgrades, and the app keeps its
-    profile somewhere outside the scoop root. This is the desktop app; the CLI
-    is the claude-code package tools.ps1 installs.
-
-    jetbrains-toolbox is the counterpart to the jetbrains-toolbox cask, and is
-    the one entry here that decides something on the machine's behalf. The
-    manifest 7-zips JetBrains' installer open rather than running it, and then
-    seeds %LOCALAPPDATA%\JetBrains\Toolbox\.settings.json with autostart off,
-    automatic updates off, and install_location pointing at `apps` under the app
-    directory, which `persist` maps out to scoop\persist\jetbrains-toolbox\apps
-    so the IDEs it installs survive an upgrade of Toolbox itself. The cask
-    settles none of that; Toolbox picks its own defaults there on first launch.
-    The seeding is skipped when that file already exists, so a Toolbox that was
-    configured by hand keeps its settings.
-
-    The list is shorter than the macOS one by choice rather than by constraint.
-    Some of those casks are macOS-only (betterdisplay, ghostty, macsyzones), and
-    extras carries most of the rest, so anything else wanted is a line here. The
-    1Password desktop app is the one exception: no bucket carries it, so
-    onepassword.ps1 installs it with winget.
-
-    Every entry needs the extras bucket, and scoop knows about no bucket beyond
-    main until it is told. Adding extras clones it with git, which
-    dependencies.ps1 has installed by the time this runs, since chezmoi runs
-    every run_once_before_ script ahead of the unprefixed ones whatever their
-    numbers say. A CI run gets git from the runner image instead.
-
-    Written for Windows PowerShell 5.1. No ternaries and no null-coalescing.
-
-    Reads DOTFILES_DEBUG to trace every statement and CI to resolve packages
-    instead of installing them, the same as its bash counterpart.
+    The 1Password desktop app is the one thing missing from this list: no
+    bucket carries it, so onepassword.ps1 installs it with winget.
 #>
 
 Set-StrictMode -Version Latest
@@ -87,20 +48,18 @@ function Get-ScoopRoot {
         return $env:SCOOP
     }
 
-    # USERPROFILE rather than $HOME, for the reason the skills linker gives:
-    # $HOME is built from HOMEDRIVE and HOMEPATH, which a managed machine can
-    # point at a network share.
+    # USERPROFILE rather than $HOME, which is built from HOMEDRIVE and HOMEPATH
+    # and can point at a network share on a managed machine.
     return (Join-Path $env:USERPROFILE 'scoop')
 }
 
 function Enable-Scoop {
     <#
     .DESCRIPTION
-        Put the scoop shims on PATH for the remainder of this script.
-
-        Repeated from scoop.ps1 rather than shared with it. The scripts under
-        install/ are standalone, and chezmoi runs them as siblings, so a scoop
-        that script installed mid-apply is not on the PATH this one inherited.
+        Put the scoop shims on PATH for the remainder of this script. Repeated
+        from scoop.ps1 rather than shared with it: chezmoi runs the install
+        scripts as siblings, so a scoop that script installed mid-apply is not
+        on the PATH this one inherited.
     #>
 
     $shims = Join-Path (Get-ScoopRoot) 'shims'
@@ -118,7 +77,7 @@ function Test-CI {
     <#
     .DESCRIPTION
         Report whether this is a continuous integration run. CI resolves
-        packages rather than installing them. That still catches a renamed or
+        packages rather than installing them, which still catches a renamed or
         misspelled name without paying for the download.
     #>
 
@@ -128,11 +87,9 @@ function Test-CI {
 function Test-BucketAdded {
     <#
     .DESCRIPTION
-        Report whether a bucket is already known.
-
-        Read off disk rather than from `scoop bucket list`, whose output has
-        been a list of names in some versions and a table of objects in others.
-        A bucket is a clone under the scoop root either way.
+        Report whether a bucket is already known. Read off disk rather than
+        from `scoop bucket list`, whose output has been a list of names in some
+        versions and a table of objects in others.
     #>
 
     param([Parameter(Mandatory = $true)][string] $Name)
@@ -169,27 +126,14 @@ function Add-MissingBuckets {
 function Test-PackageInstalled {
     <#
     .DESCRIPTION
-        Report whether a package is already present.
+        Report whether scoop installed a package. Read off disk rather than
+        from `scoop list`, which prints a formatted table and, being a script
+        rather than a process, leaves $LASTEXITCODE saying nothing about how it
+        went.
 
-        Read off disk rather than from `scoop list`, which prints a formatted
-        table and, being a script rather than a process, leaves $LASTEXITCODE
-        saying nothing about how it went. An app directory with a `current`
-        link is what an installed package is.
-
-        This answers whether scoop installed the application, not whether the
-        application is on the machine, which is the one place this is weaker
-        than its macOS counterpart. That script knows where each cask puts its
-        bundle and skips a cask whose app is already in /Applications, however
-        it got there. Windows has no such convention to check: an installer can
-        land in Program Files or under LOCALAPPDATA, per-machine or per-user,
-        under any name it likes. So an application installed by hand is
-        invisible here and scoop installs its own copy alongside it, which for
-        a browser means a second profile and a second thing competing to be the
-        default. onepassword.ps1 has a path worth checking and checks it; there
-        is nothing as reliable to check for these.
-
-        Only the per-user root is searched. scoop is used here precisely
-        because it needs no elevation, so nothing installs --global.
+        Windows has no /Applications convention to check besides that, so an
+        application installed by hand is invisible here and scoop installs its
+        own copy alongside it.
     #>
 
     param([Parameter(Mandatory = $true)][string] $Name)
@@ -203,14 +147,11 @@ function Test-ManifestKnown {
     <#
     .DESCRIPTION
         Report whether an added bucket carries a manifest for a package, which
-        is what `brew info` is used to answer on the macOS side.
-
-        Read off disk rather than from `scoop cat` or `scoop info`. Both print
-        through the host in some versions rather than down the pipeline, and
-        host output is nothing a script can capture, so a check built on it
-        would report every package missing. A manifest is a json file in a
-        bucket clone. Official buckets keep them under `bucket` and third-party
-        ones sometimes at the root, so both are searched.
+        is what `brew info` answers on the macOS side. Read off disk rather
+        than from `scoop cat` or `scoop info`, which print through the host in
+        some versions rather than down the pipeline, and host output is nothing
+        a script can capture. Official buckets keep manifests under `bucket`
+        and third-party ones sometimes at the root, so both are searched.
     #>
 
     param([Parameter(Mandatory = $true)][string] $Name)
@@ -265,11 +206,6 @@ function Install-MissingPackages {
 }
 
 function Invoke-Main {
-    <#
-    .DESCRIPTION
-        Ensure the expected applications are installed.
-    #>
-
     Enable-Scoop
 
     if (-not (Get-Command -Name 'scoop' -ErrorAction SilentlyContinue)) {
@@ -280,8 +216,8 @@ function Invoke-Main {
     Install-MissingPackages
 }
 
-# Dot-sourcing the file gets the functions and nothing else, so it can be
-# tested without installing anything on the machine running the tests.
+# Dot-sourcing gets the functions and nothing else, so the tests can load this
+# file without installing anything on the machine running them.
 if ($MyInvocation.InvocationName -ne '.') {
     Invoke-Main
 }

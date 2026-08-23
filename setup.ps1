@@ -8,21 +8,18 @@
     The counterpart to setup.sh. Gets a package manager and chezmoi onto the
     machine, then hands over to `chezmoi init --apply`, which clones this
     repository and runs everything chezmoi finds under `.chezmoiscripts/`.
-    Running it again on a machine that is already set up is a no-op.
-
-    Unlike setup.sh there is no `bootstrap_os` here. This file only ever runs on
-    one operating system, so it needs none of that structure.
+    Running it again on a machine that is already set up is a no-op. There is
+    no `bootstrap_os` here the way setup.sh has one, since this file only ever
+    runs on one operating system.
 
     scoop rather than winget. scoop installs per-user and needs no elevation,
     which is the most a managed machine can be relied on to allow, and it needs
-    nothing from the Microsoft Store to exist first. Swapping it means rewriting
-    `Install-Chezmoi` and `Install-Scoop` and nothing else. The install scripts
-    reach for winget once, in `onepassword.ps1`, for a package no bucket carries.
+    nothing from the Microsoft Store to exist first. Swapping it means
+    rewriting `Install-Chezmoi` and `Install-Scoop` and nothing else.
 
-    Written for Windows PowerShell 5.1, the one PowerShell every Windows machine
-    has. That rules out `pwsh`-era conveniences: no ternaries, no
-    null-coalescing, and no `$PSNativeCommandUseErrorActionPreference` — a
-    failing executable does not throw here, so it is checked by hand.
+    Written for Windows PowerShell 5.1, the one PowerShell every Windows
+    machine has, so there is no `$PSNativeCommandUseErrorActionPreference`
+    here: a failing executable does not throw, and is checked by hand.
 
     Configured through the environment rather than parameters, the same as
     setup.sh, because the documented invocation pipes the script into
@@ -88,12 +85,6 @@ function Test-Administrator {
 }
 
 function Test-Command {
-    <#
-    .DESCRIPTION
-        Check whether a command can be resolved, the way `command -v` is used
-        in setup.sh.
-    #>
-
     param([Parameter(Mandatory = $true)][string] $Name)
 
     return [bool] (Get-Command -Name $Name -ErrorAction SilentlyContinue)
@@ -110,9 +101,8 @@ function Get-ScoopRoot {
         return $env:SCOOP
     }
 
-    # USERPROFILE rather than $HOME, for the reason the skills linker gives:
-    # $HOME is built from HOMEDRIVE and HOMEPATH, which a managed machine can
-    # point at a network share.
+    # USERPROFILE rather than $HOME, which is built from HOMEDRIVE and HOMEPATH
+    # and can point at a network share on a managed machine.
     return (Join-Path $env:USERPROFILE 'scoop')
 }
 
@@ -164,13 +154,10 @@ function Enable-Scoop {
 function Install-Chezmoi {
     <#
     .DESCRIPTION
-        Install chezmoi through scoop.
-
-        Deliberately not the standalone installer: that leaves a binary in
-        ~/.local/bin that nothing maintains afterwards. Letting the package
-        manager own it means `scoop update` keeps it current — the same
-        reasoning setup.sh gives for using Homebrew rather than the standalone
-        installer.
+        Install chezmoi through scoop. Deliberately not the standalone
+        installer: that leaves a binary in ~/.local/bin that nothing maintains
+        afterwards. Letting the package manager own it means `scoop update`
+        keeps it current.
     #>
 
     if (Test-Command -Name 'chezmoi') {
@@ -192,11 +179,6 @@ function Install-Chezmoi {
 }
 
 function Install-Dependencies {
-    <#
-    .DESCRIPTION
-        Get scoop and chezmoi onto the machine.
-    #>
-
     Install-Scoop
     Enable-Scoop
     Install-Chezmoi
@@ -205,13 +187,10 @@ function Install-Dependencies {
 function Invoke-ChezmoiApply {
     <#
     .DESCRIPTION
-        Clone the repository and apply it.
-
-        `init` prompts for the machine type and the optional toolchains, then
-        `--apply` writes the dotfiles and runs the scripts.
-
-        Without a console chezmoi reads its answers from stdin instead, which is
-        how CI drives the prompts.
+        Clone the repository and apply it. `init` prompts for the machine type
+        and the optional toolchains, then `--apply` writes the dotfiles and
+        runs the scripts. Without a console chezmoi reads its answers from
+        stdin instead, which is how CI drives the prompts.
     #>
 
     $options = @()
@@ -233,17 +212,12 @@ function Invoke-ChezmoiApply {
 }
 
 function Invoke-Main {
-    <#
-    .DESCRIPTION
-        Bootstrap this machine.
-    #>
-
     Install-Dependencies
     Invoke-ChezmoiApply
 }
 
-# Dot-sourcing the file gets the functions and nothing else, so it can be
-# tested without bootstrapping the machine running the tests. `iex` reports the
+# Dot-sourcing gets the functions and nothing else, so the tests can load this
+# file without bootstrapping the machine running them. `iex` reports the
 # invocation name of Invoke-Expression rather than '.', so the documented
 # one-liner still runs.
 if ($MyInvocation.InvocationName -ne '.') {

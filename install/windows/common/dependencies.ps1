@@ -12,38 +12,18 @@
 
     chezmoi is listed even though it is what runs this script. setup.ps1 has
     already installed it through scoop, and naming it here means the two agree
-    about who owns it, so `scoop update` keeps it current. That is the same
-    reasoning dependencies.sh gives for listing the chezmoi formula.
+    about who owns it, so `scoop update` keeps it current.
 
-    git earns its line twice over. chezmoi needs it to clone and update this
-    repository, and home/dot_config/git is written for it.
-
-    gh matches the macOS list, so the same tooling answers on either system.
-
-    1password-cli is what home/dot_config/git/config-personal.tmpl needs.
-    That template calls onepasswordRead, so chezmoi shells out to op while it
-    renders the file, and a machine without op fails the apply outright rather
-    than skipping something. Installing it from a run_once_before_ script puts
-    op on disk before any file is written. A CI run never reaches that branch,
-    since the template checks .ci first.
-
-    op is found because the scoop shims directory is already on the PATH
-    chezmoi inherited, and a new shim inside a directory that is already there
-    needs no PATH change. The one case that breaks is a scoop this same apply
-    installed, which is the wrinkle scoop.ps1 documents.
+    1password-cli has to arrive this early:
+    home/dot_config/git/config-personal.tmpl calls onepasswordRead, so chezmoi
+    shells out to op while it renders the file, and a machine without op fails
+    the apply outright. Installing it from a run_once_before_ script puts op on
+    disk before any file is written. A CI run never reaches that branch, since
+    the template checks .ci first.
 
     The 1Password desktop app that sits beside the CLI on macOS has no line
     here, because no bucket carries a manifest for it. onepassword.ps1 installs
-    it with winget instead, and sets out what that costs.
-
-    zsh is the one entry on the macOS list with no counterpart here. Nothing on
-    a Windows host reads the zsh configuration, which is why
-    chezmoiignore.d/windows drops it.
-
-    Written for Windows PowerShell 5.1. No ternaries and no null-coalescing.
-
-    Reads DOTFILES_DEBUG to trace every statement and CI to resolve packages
-    instead of installing them, the same as its bash counterpart.
+    it with winget instead.
 #>
 
 Set-StrictMode -Version Latest
@@ -71,20 +51,18 @@ function Get-ScoopRoot {
         return $env:SCOOP
     }
 
-    # USERPROFILE rather than $HOME, for the reason the skills linker gives:
-    # $HOME is built from HOMEDRIVE and HOMEPATH, which a managed machine can
-    # point at a network share.
+    # USERPROFILE rather than $HOME, which is built from HOMEDRIVE and HOMEPATH
+    # and can point at a network share on a managed machine.
     return (Join-Path $env:USERPROFILE 'scoop')
 }
 
 function Enable-Scoop {
     <#
     .DESCRIPTION
-        Put the scoop shims on PATH for the remainder of this script.
-
-        Repeated from scoop.ps1 rather than shared with it. The scripts under
-        install/ are standalone, and chezmoi runs them as siblings, so a scoop
-        that script installed mid-apply is not on the PATH this one inherited.
+        Put the scoop shims on PATH for the remainder of this script. Repeated
+        from scoop.ps1 rather than shared with it: chezmoi runs the install
+        scripts as siblings, so a scoop that script installed mid-apply is not
+        on the PATH this one inherited.
     #>
 
     $shims = Join-Path (Get-ScoopRoot) 'shims'
@@ -102,7 +80,7 @@ function Test-CI {
     <#
     .DESCRIPTION
         Report whether this is a continuous integration run. CI resolves
-        packages rather than installing them. That still catches a renamed or
+        packages rather than installing them, which still catches a renamed or
         misspelled name without paying for the download.
     #>
 
@@ -112,15 +90,10 @@ function Test-CI {
 function Test-PackageInstalled {
     <#
     .DESCRIPTION
-        Report whether a package is already present.
-
-        Read off disk rather than from `scoop list`, which prints a formatted
-        table and, being a script rather than a process, leaves $LASTEXITCODE
-        saying nothing about how it went. An app directory with a `current`
-        link is what an installed package is.
-
-        Only the per-user root is searched. scoop is used here precisely
-        because it needs no elevation, so nothing installs --global.
+        Report whether scoop installed a package. Read off disk rather than
+        from `scoop list`, which prints a formatted table and, being a script
+        rather than a process, leaves $LASTEXITCODE saying nothing about how it
+        went.
     #>
 
     param([Parameter(Mandatory = $true)][string] $Name)
@@ -134,14 +107,11 @@ function Test-ManifestKnown {
     <#
     .DESCRIPTION
         Report whether an added bucket carries a manifest for a package, which
-        is what `brew info` is used to answer on the macOS side.
-
-        Read off disk rather than from `scoop cat` or `scoop info`. Both print
-        through the host in some versions rather than down the pipeline, and
-        host output is nothing a script can capture, so a check built on it
-        would report every package missing. A manifest is a json file in a
-        bucket clone. Official buckets keep them under `bucket` and third-party
-        ones sometimes at the root, so both are searched.
+        is what `brew info` answers on the macOS side. Read off disk rather
+        than from `scoop cat` or `scoop info`, which print through the host in
+        some versions rather than down the pipeline, and host output is nothing
+        a script can capture. Official buckets keep manifests under `bucket`
+        and third-party ones sometimes at the root, so both are searched.
     #>
 
     param([Parameter(Mandatory = $true)][string] $Name)
@@ -196,11 +166,6 @@ function Install-MissingPackages {
 }
 
 function Invoke-Main {
-    <#
-    .DESCRIPTION
-        Ensure the scoop dependencies are installed.
-    #>
-
     Enable-Scoop
 
     if (-not (Get-Command -Name 'scoop' -ErrorAction SilentlyContinue)) {
@@ -210,8 +175,8 @@ function Invoke-Main {
     Install-MissingPackages
 }
 
-# Dot-sourcing the file gets the functions and nothing else, so it can be
-# tested without installing anything on the machine running the tests.
+# Dot-sourcing gets the functions and nothing else, so the tests can load this
+# file without installing anything on the machine running them.
 if ($MyInvocation.InvocationName -ne '.') {
     Invoke-Main
 }

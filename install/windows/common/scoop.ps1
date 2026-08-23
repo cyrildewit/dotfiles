@@ -14,19 +14,12 @@
     machine that got chezmoi some other way and has no package manager yet.
 
     Enable-Scoop only widens PATH for this process. The chezmoi scripts that
-    run after this one are siblings rather than children, so a scoop installed
-    here is not on their PATH and each has to enable it for itself. setup.ps1
-    avoids that entirely by enabling scoop before chezmoi starts, which leaves
-    every script it runs with the shims already inherited.
+    run after this one are siblings rather than children, so each has to enable
+    scoop for itself.
 
     setup.ps1 repeats the install and enable steps, for the reason setup.sh
     gives about Homebrew: the bootstrap has to work on a machine where this
     repository has not been cloned, so it cannot include anything from it.
-
-    Written for Windows PowerShell 5.1. No ternaries and no null-coalescing.
-
-    Reads DOTFILES_DEBUG from the environment to trace every statement, the
-    same as its bash counterparts.
 #>
 
 Set-StrictMode -Version Latest
@@ -45,12 +38,6 @@ if ($env:DOTFILES_DEBUG) {
 $ScoopInstallerUrl = 'https://get.scoop.sh'
 
 function Test-ScoopInstalled {
-    <#
-    .DESCRIPTION
-        Check whether scoop is already available, the way `command -v brew` is
-        used in homebrew.sh.
-    #>
-
     return [bool] (Get-Command -Name 'scoop' -ErrorAction SilentlyContinue)
 }
 
@@ -79,9 +66,8 @@ function Get-ScoopRoot {
         return $env:SCOOP
     }
 
-    # USERPROFILE rather than $HOME, for the reason the skills linker gives:
-    # $HOME is built from HOMEDRIVE and HOMEPATH, which a managed machine can
-    # point at a network share.
+    # USERPROFILE rather than $HOME, which is built from HOMEDRIVE and HOMEPATH
+    # and can point at a network share on a managed machine.
     return (Join-Path $env:USERPROFILE 'scoop')
 }
 
@@ -131,11 +117,6 @@ function Enable-Scoop {
 }
 
 function Invoke-Main {
-    <#
-    .DESCRIPTION
-        Ensure scoop is installed and usable.
-    #>
-
     # Enabled before the install check as well as after it. chezmoi inherits
     # the environment of the shell that started it, which on a machine where
     # scoop was installed after that shell opened does not have the shims. The
@@ -150,8 +131,8 @@ function Invoke-Main {
     }
 }
 
-# Dot-sourcing the file gets the functions and nothing else, so it can be
-# tested without installing anything on the machine running the tests.
+# Dot-sourcing gets the functions and nothing else, so the tests can load this
+# file without installing anything on the machine running them.
 if ($MyInvocation.InvocationName -ne '.') {
     Invoke-Main
 }

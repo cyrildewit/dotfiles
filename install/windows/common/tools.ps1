@@ -9,18 +9,9 @@
     that are wanted on the machine but that nothing in this repository requires,
     so a machine without them still gets a working configuration.
 
-    scoop has no formula and cask split, so nothing stops a GUI application
-    from being listed here. The split is kept anyway: applications.ps1 holds
-    those, the way the macOS side keeps its casks apart from its formulae.
-
     Every entry comes from main, the bucket scoop ships with, so unlike
     applications.ps1 and fonts.ps1 this adds none. Anything needing another
     bucket belongs in one of those or in a script of its own.
-
-    Written for Windows PowerShell 5.1. No ternaries and no null-coalescing.
-
-    Reads DOTFILES_DEBUG to trace every statement and CI to resolve packages
-    instead of installing them, the same as its bash counterpart.
 #>
 
 Set-StrictMode -Version Latest
@@ -48,20 +39,18 @@ function Get-ScoopRoot {
         return $env:SCOOP
     }
 
-    # USERPROFILE rather than $HOME, for the reason the skills linker gives:
-    # $HOME is built from HOMEDRIVE and HOMEPATH, which a managed machine can
-    # point at a network share.
+    # USERPROFILE rather than $HOME, which is built from HOMEDRIVE and HOMEPATH
+    # and can point at a network share on a managed machine.
     return (Join-Path $env:USERPROFILE 'scoop')
 }
 
 function Enable-Scoop {
     <#
     .DESCRIPTION
-        Put the scoop shims on PATH for the remainder of this script.
-
-        Repeated from scoop.ps1 rather than shared with it. The scripts under
-        install/ are standalone, and chezmoi runs them as siblings, so a scoop
-        that script installed mid-apply is not on the PATH this one inherited.
+        Put the scoop shims on PATH for the remainder of this script. Repeated
+        from scoop.ps1 rather than shared with it: chezmoi runs the install
+        scripts as siblings, so a scoop that script installed mid-apply is not
+        on the PATH this one inherited.
     #>
 
     $shims = Join-Path (Get-ScoopRoot) 'shims'
@@ -79,7 +68,7 @@ function Test-CI {
     <#
     .DESCRIPTION
         Report whether this is a continuous integration run. CI resolves
-        packages rather than installing them. That still catches a renamed or
+        packages rather than installing them, which still catches a renamed or
         misspelled name without paying for the download.
     #>
 
@@ -89,15 +78,10 @@ function Test-CI {
 function Test-PackageInstalled {
     <#
     .DESCRIPTION
-        Report whether a package is already present.
-
-        Read off disk rather than from `scoop list`, which prints a formatted
-        table and, being a script rather than a process, leaves $LASTEXITCODE
-        saying nothing about how it went. An app directory with a `current`
-        link is what an installed package is.
-
-        Only the per-user root is searched. scoop is used here precisely
-        because it needs no elevation, so nothing installs --global.
+        Report whether scoop installed a package. Read off disk rather than
+        from `scoop list`, which prints a formatted table and, being a script
+        rather than a process, leaves $LASTEXITCODE saying nothing about how it
+        went.
     #>
 
     param([Parameter(Mandatory = $true)][string] $Name)
@@ -111,14 +95,11 @@ function Test-ManifestKnown {
     <#
     .DESCRIPTION
         Report whether an added bucket carries a manifest for a package, which
-        is what `brew info` is used to answer on the macOS side.
-
-        Read off disk rather than from `scoop cat` or `scoop info`. Both print
-        through the host in some versions rather than down the pipeline, and
-        host output is nothing a script can capture, so a check built on it
-        would report every package missing. A manifest is a json file in a
-        bucket clone. Official buckets keep them under `bucket` and third-party
-        ones sometimes at the root, so both are searched.
+        is what `brew info` answers on the macOS side. Read off disk rather
+        than from `scoop cat` or `scoop info`, which print through the host in
+        some versions rather than down the pipeline, and host output is nothing
+        a script can capture. Official buckets keep manifests under `bucket`
+        and third-party ones sometimes at the root, so both are searched.
     #>
 
     param([Parameter(Mandatory = $true)][string] $Name)
@@ -173,11 +154,6 @@ function Install-MissingPackages {
 }
 
 function Invoke-Main {
-    <#
-    .DESCRIPTION
-        Ensure the optional tools are installed.
-    #>
-
     Enable-Scoop
 
     if (-not (Get-Command -Name 'scoop' -ErrorAction SilentlyContinue)) {
@@ -187,8 +163,8 @@ function Invoke-Main {
     Install-MissingPackages
 }
 
-# Dot-sourcing the file gets the functions and nothing else, so it can be
-# tested without installing anything on the machine running the tests.
+# Dot-sourcing gets the functions and nothing else, so the tests can load this
+# file without installing anything on the machine running them.
 if ($MyInvocation.InvocationName -ne '.') {
     Invoke-Main
 }
