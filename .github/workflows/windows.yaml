@@ -1,15 +1,12 @@
 name: Windows
 
-# The counterpart to macos.yaml, and the only place the Windows render of the
-# templates is exercised at all: `.chezmoi.os` is not something a template can
-# be tricked about from a Mac.
-
 on:
   push:
     branches: [main]
     paths:
       - ".github/workflows/windows.yaml"
       - "setup.ps1"
+      - "install/windows/**"
       - "scripts/windows/**"
       - "home/**"
   pull_request:
@@ -17,6 +14,7 @@ on:
     paths:
       - ".github/workflows/windows.yaml"
       - "setup.ps1"
+      - "install/windows/**"
       - "scripts/windows/**"
       - "home/**"
 
@@ -27,9 +25,9 @@ defaults:
     shell: pwsh
 
 jobs:
-  apply:
-    name: Apply to a clean machine
-    runs-on: windows-latest
+  bootstrap:
+    name: Bootstrap a clean machine
+    runs-on: windows-2025
 
     steps:
       - name: Run setup.ps1 the way the README documents
@@ -39,6 +37,7 @@ jobs:
           PR_BRANCH: ${{ github.head_ref }}
         run: |
           $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
 
           $branch = if ($env:EVENT_NAME -eq 'pull_request') {
               $env:PR_BRANCH
@@ -93,9 +92,10 @@ jobs:
 
           Write-Host 'machine and dotnet recorded as answered'
 
-      - name: Check the portable dotfiles were written
+      - name: Check the dotfiles were written
         run: |
           $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
 
           # USERPROFILE rather than $HOME, for the reason the skills linker
           # gives: $HOME is built from HOMEDRIVE and HOMEPATH, which a managed
@@ -119,6 +119,7 @@ jobs:
       - name: Check nothing macOS-shaped landed
         run: |
           $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
 
           # These are ignored through chezmoiignore.d/windows. Nothing on a
           # Windows host reads any of them, and writing them anyway is how a
@@ -142,6 +143,7 @@ jobs:
       - name: Check the SSH config took the Windows branch
         run: |
           $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
 
           # The template has a branch per OS. Getting the wrong one here would
           # overwrite a real ~/.ssh/config with a path that means nothing on
@@ -162,6 +164,7 @@ jobs:
       - name: Check the shared skills pool was linked
         run: |
           $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
 
           # Two things at once: chezmoi could create the symlink_ entries that
           # build the pool, and the run_after_ linker junctioned them into the
