@@ -1,21 +1,3 @@
-{{/*
-   @file home/dot_config/git/config-personal.tmpl
-   @brief Sign commits with the SSH key held in 1Password.
-   @description
-     Included by `config.tmpl` on every machine. Renders nothing when the
-     1Password CLI is absent: an empty file is one chezmoi does not write, so
-     the include finds nothing and git simply commits unsigned.
-
-     The guard is there for the first apply on a new machine. `1password-cli`
-     is installed by that same apply, so `op` is still missing at the point
-     this renders, and an unguarded `onepasswordRead` takes the whole run down
-     with it rather than just this file.
-
-     `lookPath` proves the binary exists, not that a vault is unlocked. An `op`
-     that is present but signed out still fails the apply, deliberately: on a
-     machine that has 1Password, an unreadable signing key is worth stopping
-     for rather than silently dropping commit signing.
-*/ -}}
 {{ if lookPath "op" -}}
 [user]
     signingkey = {{ onepasswordRead "op://lyiokpptmbyfo6str5tntvaemy/ebrgp4xf4lheweoxh5ap5nh574/public key" .onepassword_account }}
