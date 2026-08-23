@@ -12,4 +12,13 @@ alias l="ls -laF"
 # Ghostty configuration in this repository asks for by name.
 if command -v eza &> /dev/null; then
     alias l="eza -la --icons --group-directories-first --hyperlink"
+
+    # An alias cannot take an argument, so the level arrives through a function.
+    # Defaults to level 2 and to the current directory, which eza needs spelled
+    # out: --tree with no path prints nothing and still exits 0.
+    ltree() {
+        local level="${1:-2}"
+        (( $# )) && shift
+        eza -la --icons --group-directories-first --hyperlink --tree --level "$level" "${@:-.}"
+    }
 fi
