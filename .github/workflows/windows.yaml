@@ -116,6 +116,39 @@ jobs:
               }
           }
 
+      - name: Check every package still resolves
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
+
+          # CI is set, so the install scripts resolved these rather than
+          # installing them. Anything renamed or removed upstream would already
+          # have failed the bootstrap step; this repeats the check on its own so
+          # a failure names the package instead of a script.
+          #
+          # Read off disk for the reason the install scripts give: `scoop cat`
+          # and `scoop info` print through the host in some versions rather
+          # than down the pipeline, and host output is nothing a script can
+          # capture. The bucket clones are what scoop resolves a name against.
+          $buckets = Join-Path $env:USERPROFILE 'scoop\buckets'
+
+          foreach ($package in @(
+              'chezmoi'
+              'git'
+              'bruno'
+              'claude-code'
+              'nodejs-lts'
+              'vim'
+          )) {
+              Write-Host "Checking $package"
+
+              $manifest = Join-Path $buckets "*\bucket\$package.json"
+
+              if (-not (Get-ChildItem -Path $manifest -ErrorAction SilentlyContinue)) {
+                  throw "no bucket carries a manifest for $package"
+              }
+          }
+
       - name: Check nothing macOS-shaped landed
         run: |
           $ErrorActionPreference = 'Stop'
