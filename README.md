@@ -3,6 +3,8 @@ My dotfiles and personal preferences managed using Chezmoi
 
 ## Setting up a new machine
 
+### macOS
+
 ```sh
 bash -c "$(curl -fsLS https://raw.githubusercontent.com/cyrildewit/dotfiles/main/setup.sh)"
 ```
@@ -16,6 +18,29 @@ chezmoi is installed through Homebrew rather than the standalone installer on
 purpose. The standalone installer leaves a binary in `~/.local/bin` that
 nothing updates afterwards; letting Homebrew own it means `brew upgrade` keeps
 it current, and `dependencies.sh` lists the same formula so the two agree.
+
+### Windows
+
+```powershell
+irm https://raw.githubusercontent.com/cyrildewit/dotfiles/main/setup.ps1 | iex
+```
+
+`setup.ps1` does the same job with scoop in Homebrew's place: install the
+package manager, install chezmoi with it, then `chezmoi init --apply`.
+
+The pipe into `iex` is not just the local spelling of `curl | bash`. A
+downloaded `.ps1` carries a mark-of-the-web and will not run under the default
+execution policy, so the script has to reach the parser without touching disk.
+For the same reason it takes no parameters — there is nothing to bind them to.
+`DOTFILES_REPO_URL`, `DOTFILES_BRANCH` and `DOTFILES_DEBUG` are read from the
+environment instead, exactly as in `setup.sh`.
+
+scoop rather than winget, although both work on the target machine. scoop
+installs per-user and never needs elevation, which is the safer assumption on
+an Intune-managed laptop, and it is already the package manager in use there.
+
+The script targets Windows PowerShell 5.1, since that is the only PowerShell on
+the machine this was written for.
 
 ## Install scripts
 
