@@ -142,6 +142,7 @@ jobs:
               'claude'
               'claude-code'
               'eza'
+              'jetbrains-toolbox'
               'nodejs-lts'
               'vim'
               'JetBrainsMono-NF'

@@ -29,6 +29,17 @@
     profile somewhere outside the scoop root. This is the desktop app; the CLI
     is the claude-code package tools.ps1 installs.
 
+    jetbrains-toolbox is the counterpart to the jetbrains-toolbox cask, and is
+    the one entry here that decides something on the machine's behalf. The
+    manifest 7-zips JetBrains' installer open rather than running it, and then
+    seeds %LOCALAPPDATA%\JetBrains\Toolbox\.settings.json with autostart off,
+    automatic updates off, and install_location pointing at `apps` under the app
+    directory, which `persist` maps out to scoop\persist\jetbrains-toolbox\apps
+    so the IDEs it installs survive an upgrade of Toolbox itself. The cask
+    settles none of that; Toolbox picks its own defaults there on first launch.
+    The seeding is skipped when that file already exists, so a Toolbox that was
+    configured by hand keeps its settings.
+
     The list is shorter than the macOS one by choice rather than by constraint.
     Some of those casks are macOS-only (betterdisplay, ghostty, macsyzones), and
     extras carries most of the rest, so anything else wanted is a line here. The
@@ -62,6 +73,7 @@ $Packages = @(
     'brave'
     'bruno'
     'claude'
+    'jetbrains-toolbox'
 )
 
 function Get-ScoopRoot {
