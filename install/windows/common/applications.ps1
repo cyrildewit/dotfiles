@@ -2,20 +2,36 @@
 
 <#
 .SYNOPSIS
-    Optional scoop packages.
+    Applications the dotfiles expect to find.
 
 .DESCRIPTION
-    The Windows counterpart to install/macos/common/tools.sh. Installs packages
-    that are wanted on the machine but that nothing in this repository requires,
-    so a machine without them still gets a working configuration.
+    The Windows counterpart to install/macos/common/applications.sh. Installs
+    the GUI applications wanted on the machine.
 
-    scoop has no formula and cask split, so nothing stops a GUI application
-    from being listed here. The split is kept anyway: applications.ps1 holds
-    those, the way the macOS side keeps its casks apart from its formulae.
+    scoop has no formula and cask split, so this file is a convention rather
+    than something scoop enforces: the same `scoop install` that tools.ps1 runs,
+    pointed at a different list. It exists so the GUI applications do not crowd
+    out the command-line packages, the way the macOS side keeps its casks apart
+    from its formulae.
 
-    Every entry comes from main, the bucket scoop ships with, so unlike
-    applications.ps1 and fonts.ps1 this adds none. Anything needing another
-    bucket belongs in one of those or in a script of its own.
+    brave is the counterpart to the brave-browser cask, and the two installs are
+    not the same shape. The cask runs Brave's own installer. The manifest
+    unpacks a portable zip and points --user-data-dir back into the app
+    directory, with `persist` mapping it out to scoop\persist\brave, which is
+    what carries the profile across upgrades. Nothing in this repository reads
+    either path.
+
+    The list is shorter than the macOS one by choice rather than by constraint.
+    Some of those casks are macOS-only (betterdisplay, ghostty, macsyzones), and
+    extras carries most of the rest, so anything else wanted is a line here. The
+    1Password desktop app is the one exception: no bucket carries it, so
+    onepassword.ps1 installs it with winget.
+
+    Every entry needs the extras bucket, and scoop knows about no bucket beyond
+    main until it is told. Adding extras clones it with git, which
+    dependencies.ps1 has installed by the time this runs, since chezmoi runs
+    every run_once_before_ script ahead of the unprefixed ones whatever their
+    numbers say. A CI run gets git from the runner image instead.
 
     Written for Windows PowerShell 5.1. No ternaries and no null-coalescing.
 
@@ -30,11 +46,13 @@ if ($env:DOTFILES_DEBUG) {
     Set-PSDebug -Trace 1
 }
 
+$Buckets = @(
+    'extras'
+)
+
 $Packages = @(
-    'claude-code'
-    'eza'
-    'nodejs-lts'
-    'vim'
+    'brave'
+    'bruno'
 )
 
 function Get-ScoopRoot {
@@ -86,6 +104,47 @@ function Test-CI {
     return ($env:CI -eq 'true')
 }
 
+function Test-BucketAdded {
+    <#
+    .DESCRIPTION
+        Report whether a bucket is already known.
+
+        Read off disk rather than from `scoop bucket list`, whose output has
+        been a list of names in some versions and a table of objects in others.
+        A bucket is a clone under the scoop root either way.
+    #>
+
+    param([Parameter(Mandatory = $true)][string] $Name)
+
+    $bucket = Join-Path (Get-ScoopRoot) "buckets\$Name"
+
+    return (Test-Path -LiteralPath $bucket -PathType Container)
+}
+
+function Add-MissingBuckets {
+    <#
+    .DESCRIPTION
+        Add whichever entries of $Buckets are not known yet. Adding one that is
+        already there is an error rather than a no-op, so each is checked first.
+    #>
+
+    foreach ($bucket in $Buckets) {
+        if (Test-BucketAdded -Name $bucket) {
+            continue
+        }
+
+        Write-Host "Adding the $bucket bucket."
+        scoop bucket add $bucket
+
+        # Checked by outcome, for the reason Test-PackageInstalled gives.
+        # Failing here rather than at the install names the actual problem,
+        # which is usually that git is missing.
+        if (-not (Test-BucketAdded -Name $bucket)) {
+            throw "scoop bucket add $bucket did not add the bucket."
+        }
+    }
+}
+
 function Test-PackageInstalled {
     <#
     .DESCRIPTION
@@ -95,6 +154,18 @@ function Test-PackageInstalled {
         table and, being a script rather than a process, leaves $LASTEXITCODE
         saying nothing about how it went. An app directory with a `current`
         link is what an installed package is.
+
+        This answers whether scoop installed the application, not whether the
+        application is on the machine, which is the one place this is weaker
+        than its macOS counterpart. That script knows where each cask puts its
+        bundle and skips a cask whose app is already in /Applications, however
+        it got there. Windows has no such convention to check: an installer can
+        land in Program Files or under LOCALAPPDATA, per-machine or per-user,
+        under any name it likes. So an application installed by hand is
+        invisible here and scoop installs its own copy alongside it, which for
+        a browser means a second profile and a second thing competing to be the
+        default. onepassword.ps1 has a path worth checking and checks it; there
+        is nothing as reliable to check for these.
 
         Only the per-user root is searched. scoop is used here precisely
         because it needs no elevation, so nothing installs --global.
@@ -146,7 +217,7 @@ function Install-MissingPackages {
     $pending = @($Packages | Where-Object { -not (Test-PackageInstalled -Name $_) })
 
     if ($pending.Count -eq 0) {
-        Write-Host 'Optional tools are already present.'
+        Write-Host 'Applications are already present.'
         return
     }
 
@@ -175,7 +246,7 @@ function Install-MissingPackages {
 function Invoke-Main {
     <#
     .DESCRIPTION
-        Ensure the optional tools are installed.
+        Ensure the expected applications are installed.
     #>
 
     Enable-Scoop
@@ -184,6 +255,7 @@ function Invoke-Main {
         throw 'scoop is not on PATH. install/windows/common/scoop.ps1 runs before this and should have installed it.'
     }
 
+    Add-MissingBuckets
     Install-MissingPackages
 }
 
