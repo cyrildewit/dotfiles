@@ -49,6 +49,24 @@ function defaults_ui() {
 }
 
 #
+# @description Configure the built-in trackpad.
+#   Tracking speed is left alone: it is a preference worth tuning per machine,
+#   and overwriting it here would undo that on every fresh install. The
+#   AppleBluetoothMultitouch domain is left out too, since there is no Magic
+#   Trackpad to configure.
+#
+function defaults_trackpad() {
+    # Tap to click, for this user and for the login screen
+    defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+    defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+    defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+
+    # Drag a window with three fingers instead of holding the click down.
+    # System Settings files this under Accessibility, not Trackpad.
+    defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
+}
+
+#
 # @description Apply every preference group.
 #
 function main() {
@@ -58,8 +76,9 @@ function main() {
     fi
 
     defaults_ui
+    defaults_trackpad
 
-    restart_applications ControlCenter
+    restart_applications ControlCenter SystemUIServer
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
