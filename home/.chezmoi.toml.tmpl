@@ -2,6 +2,15 @@
 {{- $machine := promptChoiceOnce . "machine" "Machine type" $machineChoices "personal" -}}
 {{- $dotnet := promptBoolOnce . "dotnet" "Set up .NET development" false -}}
 
+{{- $ci := eq (env "CI") "true" -}}
+
+{{- $onepasswordSigner := "" -}}
+{{- if eq .chezmoi.os "darwin" -}}
+{{-   $onepasswordSigner = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign" -}}
+{{- else if eq .chezmoi.os "windows" -}}
+{{-   $onepasswordSigner = "C:/Program Files/1Password/app/8/op-ssh-sign.exe" -}}
+{{- end -}}
+
 {{- $archipelAcademy := promptBoolOnce . "archipel_academy.enabled" "Set up Archipel Academy git identity" false -}}
 {{- $archipelAcademyEmail := "" -}}
 {{- $archipelAcademyAccount := "" -}}
@@ -11,12 +20,14 @@
 {{- end -}}
 
 [data]
+    ci = {{ $ci }}
     machine = {{ $machine | quote }}
     dotnet = {{ $dotnet }}
     full_name = "Cyril de Wit"
     email = "cyril@cyrildewit.nl"
     username = "cyrildewit"
     onepassword_account = "my.1password.com"
+    onepassword_signer = {{ $onepasswordSigner | quote }}
     xdgCacheDir = "{{ .chezmoi.homeDir }}/.cache"
     xdgConfigDir = "{{ .chezmoi.homeDir }}/.config"
     xdgDataDir = "{{ .chezmoi.homeDir }}/.local/share"

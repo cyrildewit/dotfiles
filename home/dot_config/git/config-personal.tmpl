@@ -1,4 +1,4 @@
-{{ if lookPath "op" -}}
+{{ if and (not .ci) .onepassword_signer -}}
 [user]
     signingkey = {{ onepasswordRead "op://lyiokpptmbyfo6str5tntvaemy/ebrgp4xf4lheweoxh5ap5nh574/public key" .onepassword_account }}
 
@@ -6,7 +6,7 @@
     format = ssh
 
 [gpg "ssh"]
-    program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+    program = {{ .onepassword_signer | quote }}
 
 [commit]
     gpgsign = true
