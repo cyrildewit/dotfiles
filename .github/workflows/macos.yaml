@@ -48,10 +48,11 @@ jobs:
           # Answers to the chezmoi init prompts, in the order they are asked.
           # A terminal is absent here, so chezmoi reads them from stdin.
           # The log is kept so later steps can assert which scripts ran.
-          printf 'personal\nfalse\n' \
+          printf 'personal\nfalse\nfalse\n' \
             | bash -c "$(curl -fsLS "${URL}")" \
             | tee "${RUNNER_TEMP}/bootstrap.log"
-          #        │        │
+          #        │        │      │
+          #        │        │      └─ Set up Archipel Academy git identity
           #        │        └─ Set up .NET development
           #        └─ Machine type
 

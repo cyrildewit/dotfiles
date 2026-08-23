@@ -1,0 +1,4 @@
+{{ if dig "archipel_academy" "enabled" false . -}}
+[user]
+    email = {{ .archipel_academy.email | quote }}
+{{ end -}}

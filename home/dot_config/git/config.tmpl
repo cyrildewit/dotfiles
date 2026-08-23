@@ -5,5 +5,7 @@
 [include]
     path = config-personal
 
-[includeIf "gitdir:{{ .archipel_academy.dir }}/"]
+{{ if dig "archipel_academy" "enabled" false . }}
+[includeIf "gitdir/i:{{ .archipel_academy.dir }}/"]
     path = config-work-archipel-academy
+{{ end -}}
