@@ -133,6 +133,7 @@ jobs:
           $buckets = Join-Path $env:USERPROFILE 'scoop\buckets'
 
           foreach ($package in @(
+              '1password-cli'
               'chezmoi'
               'gh'
               'git'

@@ -122,7 +122,7 @@ were installed by hand rather than through Homebrew.
 | Script | Installs | Personal | Work |
 | --- | --- | :-: | :-: |
 | `scoop.ps1` | scoop | ✓ | ✓ |
-| `dependencies.ps1` | `chezmoi`, `gh`, `git` | ✓ | ✓ |
+| `dependencies.ps1` | `1password-cli`, `chezmoi`, `gh`, `git` | ✓ | ✓ |
 | `tools.ps1` | `bruno`, `claude-code`, `nodejs-lts`, `vim` | ✓ | ✓ |
 
 `scoop.ps1` is the counterpart to `homebrew.sh`. On a machine bootstrapped with
@@ -136,6 +136,13 @@ chezmoi needs git to clone and update the source, and `dot_config/git` is
 written for it, so git is a dependency. Nothing here reads bruno, node or vim.
 zsh is the one entry on the macOS dependency list with no counterpart here,
 since nothing on a Windows host reads the zsh configuration.
+
+`1password-cli` is a dependency in the strict sense. `config-personal.tmpl`
+calls `onepasswordRead`, so chezmoi shells out to `op` while rendering that
+file, and a machine without it fails the apply. The 1Password desktop app that
+sits beside the CLI on macOS has no entry, because no scoop bucket carries a
+manifest for it. It is installed machine-wide on the Windows machine already,
+which is the copy `onepassword_signer` points at.
 
 scoop has no formula and cask split, so bruno sits among three command-line
 packages in `tools.ps1` despite being a GUI app. Once there are several apps

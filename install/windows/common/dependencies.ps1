@@ -21,6 +21,24 @@
     gh matches the macOS list. It is not on the Windows machine yet, so this is
     the script that puts it there.
 
+    1password-cli is what home/dot_config/git/config-personal.tmpl needs.
+    That template calls onepasswordRead, so chezmoi shells out to op while it
+    renders the file, and a machine without op fails the apply outright rather
+    than skipping something. Installing it from a run_once_before_ script puts
+    op on disk before any file is written. A CI run never reaches that branch,
+    since the template checks .ci first.
+
+    op is found because the scoop shims directory is already on the PATH
+    chezmoi inherited, and a new shim inside a directory that is already there
+    needs no PATH change. The one case that breaks is a scoop this same apply
+    installed, which is the wrinkle scoop.ps1 documents.
+
+    The 1Password desktop app has no line of its own, unlike the macOS cask.
+    No bucket carries a manifest for it, it is installed machine-wide on the
+    target laptop already, and .chezmoi.toml.tmpl points onepassword_signer at
+    that copy under Program Files. A per-user scoop install would be a second
+    copy at a path nothing here reads.
+
     zsh is the one entry on the macOS list with no counterpart here. Nothing on
     a Windows host reads the zsh configuration, which is why
     chezmoiignore.d/windows drops it.
@@ -40,6 +58,7 @@ if ($env:DOTFILES_DEBUG) {
 }
 
 $Packages = @(
+    '1password-cli'
     'chezmoi'
     'gh'
     'git'
