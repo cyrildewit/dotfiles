@@ -44,8 +44,9 @@ the machine this was written for.
 
 ## Install scripts
 
-Machine setup lives in `install/<os>/...` as plain, standalone shell scripts.
-chezmoi runs them through thin shims in `home/.chezmoiscripts/<os>/`:
+Machine setup lives in `install/<os>/...` as plain, standalone scripts, shell
+on macOS and PowerShell on Windows. chezmoi runs them through thin shims in
+`home/.chezmoiscripts/<os>/`:
 
 ```gotmpl
 {{ if eq .chezmoi.os "darwin" -}}
@@ -98,6 +99,8 @@ gigabyte together and need a tap, so they qualify. Anything that is one quick
 
 ### What gets installed
 
+#### macOS
+
 | Script | Installs | Personal | Work |
 | --- | --- | :-: | :-: |
 | `command_line_tools.sh` | Xcode Command Line Tools | ✓ | ✓ |
@@ -113,6 +116,23 @@ gigabyte together and need a tap, so they qualify. Anything that is one quick
 
 Everything above is skipped when it is already installed, including apps that
 were installed by hand rather than through Homebrew.
+
+#### Windows
+
+| Script | Installs | Personal | Work |
+| --- | --- | :-: | :-: |
+| `scoop.ps1` | scoop | ✓ | ✓ |
+
+`scoop.ps1` is the counterpart to `homebrew.sh`. On a machine bootstrapped with
+`setup.ps1` it does nothing, since that script installed scoop before chezmoi
+existed to run anything. It is here for the other way in, a `chezmoi apply` on a
+machine that got chezmoi some other way and has no package manager yet.
+
+One wrinkle has no macOS equivalent. The scoop installer writes the shims to the
+user PATH, and the running chezmoi never re-reads that, so a scoop installed
+mid-apply is not on PATH for the scripts that follow. Any script that needs
+scoop has to prepend `~/scoop/shims` itself, the way `Enable-Scoop` does.
+`setup.ps1` avoids the problem by enabling scoop before chezmoi starts.
 
 ### When scripts run
 
