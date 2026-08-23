@@ -2,3 +2,13 @@
 
 # Homebrew config is macOS-only here.
 .config/homebrew
+
+# Nothing here reads these. The shells on a Windows host are PowerShell and,
+# through scoop's git, Git Bash, which reads .bashrc rather than .zshrc.
+.zshrc
+.zprofile
+.aliases
+
+# Ghostty is macOS-only, and eza is not installed here.
+.config/ghostty
+.config/eza
