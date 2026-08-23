@@ -1,0 +1,210 @@
+name: Windows
+
+# The counterpart to macos.yaml, and the only place the Windows render of the
+# templates is exercised at all: `.chezmoi.os` is not something a template can
+# be tricked about from a Mac.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/windows.yaml"
+      - "setup.ps1"
+      - "scripts/windows/**"
+      - "home/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/windows.yaml"
+      - "setup.ps1"
+      - "scripts/windows/**"
+      - "home/**"
+
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  apply:
+    name: Apply to a clean machine
+    runs-on: windows-latest
+
+    steps:
+      - name: Run setup.ps1 the way the README documents
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PUSH_BRANCH: ${{ github.ref_name }}
+          PR_BRANCH: ${{ github.head_ref }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          $branch = if ($env:EVENT_NAME -eq 'pull_request') {
+              $env:PR_BRANCH
+          } else {
+              $env:PUSH_BRANCH
+          }
+
+          $url = "https://raw.githubusercontent.com/$env:GITHUB_REPOSITORY/$branch/setup.ps1"
+          Write-Host "Bootstrapping from $url on branch $branch"
+
+          # setup.ps1 reads its configuration from the environment, because the
+          # documented invocation pipes it into Invoke-Expression and there is
+          # nothing to bind parameters to.
+          $env:DOTFILES_BRANCH = $branch
+
+          # A child powershell.exe rather than `iex` in this step, for two
+          # reasons. The laptop this targets has Windows PowerShell 5.1 and no
+          # pwsh, so 5.1 is the version worth testing. And a PowerShell
+          # pipeline is in-process: piping the answers to a script block would
+          # not put them on any stdin that chezmoi could inherit, whereas
+          # piping into a process does.
+          #
+          # Answers to the chezmoi init prompts, in the order they are asked.
+          @(
+              'personal'  # Machine type
+              'false'     # Set up .NET development
+              'false'     # Set up Archipel Academy git identity
+          ) | powershell.exe -NoProfile -Command "irm $url | iex"
+
+          if ($LASTEXITCODE -ne 0) {
+              throw "setup.ps1 exited with $LASTEXITCODE."
+          }
+
+          # setup.ps1 put the scoop shims on the user PATH, which the later
+          # steps get their own shells for and will not inherit from this one.
+          Add-Content -Path $env:GITHUB_PATH -Value (Join-Path $env:USERPROFILE 'scoop\shims')
+
+      - name: Check the prompt answers were stored
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
+
+          $data = chezmoi data | ConvertFrom-Json
+
+          if ($data.machine -ne 'personal') {
+              throw "machine is '$($data.machine)', expected 'personal'"
+          }
+
+          if ($data.dotnet -ne $false) {
+              throw "dotnet is '$($data.dotnet)', expected false"
+          }
+
+          Write-Host 'machine and dotnet recorded as answered'
+
+      - name: Check the portable dotfiles were written
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          # USERPROFILE rather than $HOME, for the reason the skills linker
+          # gives: $HOME is built from HOMEDRIVE and HOMEPATH, which a managed
+          # machine can point at a network share.
+          foreach ($file in @(
+              '.config\git\config'
+              '.config\git\ignore'
+              '.claude\settings.json'
+              '.claude\CLAUDE.md'
+              '.claude\rules\ask-user-question.md'
+              '.ssh\config'
+          )) {
+              $path = Join-Path $env:USERPROFILE $file
+              Write-Host "Checking $path"
+
+              if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
+                  throw "$path was not written"
+              }
+          }
+
+      - name: Check nothing macOS-shaped landed
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          # These are ignored through chezmoiignore.d/windows. Nothing on a
+          # Windows host reads any of them, and writing them anyway is how a
+          # missing ignore line would go unnoticed.
+          foreach ($file in @(
+              '.zshrc'
+              '.zprofile'
+              '.aliases'
+              '.config\ghostty\config'
+              '.config\eza\theme.yml'
+              '.config\homebrew\brew.env'
+          )) {
+              $path = Join-Path $env:USERPROFILE $file
+              Write-Host "Checking $path is absent"
+
+              if (Test-Path -LiteralPath $path) {
+                  throw "$path was written on Windows"
+              }
+          }
+
+      - name: Check the SSH config took the Windows branch
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          # The template has a branch per OS. Getting the wrong one here would
+          # overwrite a real ~/.ssh/config with a path that means nothing on
+          # the host, so assert both halves rather than just that the file
+          # exists.
+          $config = Get-Content -Raw -LiteralPath (Join-Path $env:USERPROFILE '.ssh\config')
+
+          if ($config -notmatch 'ssh\.dev\.azure\.com') {
+              throw 'the Windows SSH block is missing from ~/.ssh/config'
+          }
+
+          if ($config -match 'Group Containers') {
+              throw 'the macOS 1Password agent socket rendered on Windows'
+          }
+
+          Write-Host 'the SSH config is the Windows one'
+
+      - name: Check the shared skills pool was linked
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          # Two things at once: chezmoi could create the symlink_ entries that
+          # build the pool, and the run_after_ linker junctioned them into the
+          # tool directory.
+          $pool = Join-Path $env:USERPROFILE '.agents\skills'
+          $entries = Get-ChildItem -LiteralPath $pool -Force
+
+          if (-not $entries) {
+              throw "the shared skills pool at $pool is empty"
+          }
+
+          foreach ($entry in $entries) {
+              $link = Join-Path $env:USERPROFILE ".claude\skills\$($entry.Name)"
+              Write-Host "Checking $link"
+
+              $item = Get-Item -LiteralPath $link -Force -ErrorAction SilentlyContinue
+
+              if (-not $item) {
+                  throw "$link was not linked into the tool directory"
+              }
+
+              if (-not ($item.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+                  throw "$link is a real entry rather than a junction"
+              }
+          }
+
+      - name: Check applying again changes nothing
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
+
+          chezmoi apply --no-tty
+
+          # Scripts are excluded because chezmoi has no on-disk state to
+          # compare them against, so they never count as settled. `chezmoi
+          # verify` fails here for that reason alone, which makes it useless as
+          # a signal.
+          $pending = chezmoi status --exclude=scripts
+
+          if ($pending) {
+              Write-Host 'a second apply left these out of sync:'
+              Write-Host ($pending -join [Environment]::NewLine)
+              throw 'the second apply was not a no-op'
+          }
+
+          Write-Host 'the machine is unchanged by a second apply'
