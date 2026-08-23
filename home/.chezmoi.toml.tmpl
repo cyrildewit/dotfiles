@@ -3,15 +3,9 @@
 {{- $dotnet := promptBoolOnce . "dotnet" "Set up .NET development" false -}}
 
 {{- $archipelAcademy := promptBoolOnce . "archipel_academy.enabled" "Set up Archipel Academy git identity" false -}}
-{{- $archipelAcademyDir := "" -}}
 {{- $archipelAcademyEmail := "" -}}
 {{- $archipelAcademyAccount := "" -}}
-{{- $archipelAcademyDirDefault := "~/Code/ArchipelAcademy" -}}
-{{- if eq .chezmoi.os "windows" -}}
-{{-   $archipelAcademyDirDefault = "~/Projects" -}}
-{{- end -}}
 {{- if $archipelAcademy -}}
-{{-   $archipelAcademyDir = promptStringOnce . "archipel_academy.dir" "Archipel Academy code directory" $archipelAcademyDirDefault -}}
 {{-   $archipelAcademyEmail = promptStringOnce . "archipel_academy.email" "Archipel Academy email" -}}
 {{-   $archipelAcademyAccount = promptStringOnce . "archipel_academy.onepassword_account" "Archipel Academy 1Password account" -}}
 {{- end -}}
@@ -30,7 +24,6 @@
 {{ if $archipelAcademy }}
 [data.archipel_academy]
     enabled = true
-    dir = {{ $archipelAcademyDir | quote }}
     email = {{ $archipelAcademyEmail | quote }}
     onepassword_account = {{ $archipelAcademyAccount | quote }}
 {{ end -}}
