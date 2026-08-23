@@ -122,7 +122,7 @@ were installed by hand rather than through Homebrew.
 | Script | Installs | Personal | Work |
 | --- | --- | :-: | :-: |
 | `scoop.ps1` | scoop | ✓ | ✓ |
-| `dependencies.ps1` | `chezmoi`, `git` | ✓ | ✓ |
+| `dependencies.ps1` | `chezmoi`, `gh`, `git` | ✓ | ✓ |
 | `tools.ps1` | `bruno`, `claude-code`, `nodejs-lts`, `vim` | ✓ | ✓ |
 
 `scoop.ps1` is the counterpart to `homebrew.sh`. On a machine bootstrapped with
@@ -134,9 +134,8 @@ The other two split the way the macOS scripts do. Something in this repository
 breaks without `dependencies.ps1` and nothing breaks without `tools.ps1`.
 chezmoi needs git to clone and update the source, and `dot_config/git` is
 written for it, so git is a dependency. Nothing here reads bruno, node or vim.
-The macOS dependency list also has gh and zsh, and neither is a port. Nothing on
-a Windows host reads the zsh configuration, and gh is not installed on that
-machine.
+zsh is the one entry on the macOS dependency list with no counterpart here,
+since nothing on a Windows host reads the zsh configuration.
 
 scoop has no formula and cask split, so bruno sits among three command-line
 packages in `tools.ps1` despite being a GUI app. Once there are several apps

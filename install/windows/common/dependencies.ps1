@@ -18,9 +18,12 @@
     git earns its line twice over. chezmoi needs it to clone and update this
     repository, and home/dot_config/git is written for it.
 
-    The macOS list also has gh and zsh. Neither is a port: nothing on a Windows
-    host reads the zsh configuration, which is why chezmoiignore.d/windows drops
-    it, and gh is not installed on the Windows machine.
+    gh matches the macOS list. It is not on the Windows machine yet, so this is
+    the script that puts it there.
+
+    zsh is the one entry on the macOS list with no counterpart here. Nothing on
+    a Windows host reads the zsh configuration, which is why
+    chezmoiignore.d/windows drops it.
 
     Written for Windows PowerShell 5.1, the only PowerShell on the target
     machine. No ternaries and no null-coalescing.
@@ -38,6 +41,7 @@ if ($env:DOTFILES_DEBUG) {
 
 $Packages = @(
     'chezmoi'
+    'gh'
     'git'
 )
 

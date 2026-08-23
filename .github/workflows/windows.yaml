@@ -134,6 +134,7 @@ jobs:
 
           foreach ($package in @(
               'chezmoi'
+              'gh'
               'git'
               'bruno'
               'claude-code'
