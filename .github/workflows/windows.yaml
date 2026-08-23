@@ -141,6 +141,9 @@ jobs:
               'claude-code'
               'nodejs-lts'
               'vim'
+              'JetBrainsMono-NF'
+              'JetBrainsMono-NF-Mono'
+              'JetBrainsMono-NF-Propo'
           )) {
               Write-Host "Checking $package"
 

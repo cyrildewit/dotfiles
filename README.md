@@ -124,6 +124,7 @@ were installed by hand rather than through Homebrew.
 | `scoop.ps1` | scoop | ✓ | ✓ |
 | `dependencies.ps1` | `1password-cli`, `chezmoi`, `gh`, `git` | ✓ | ✓ |
 | `tools.ps1` | `bruno`, `claude-code`, `nodejs-lts`, `vim` | ✓ | ✓ |
+| `fonts.ps1` | `JetBrainsMono-NF`, `JetBrainsMono-NF-Mono`, `JetBrainsMono-NF-Propo` | ✓ | ✓ |
 
 `scoop.ps1` is the counterpart to `homebrew.sh`. On a machine bootstrapped with
 `setup.ps1` it does nothing, since that script installed scoop before chezmoi
@@ -148,10 +149,18 @@ scoop has no formula and cask split, so bruno sits among three command-line
 packages in `tools.ps1` despite being a GUI app. Once there are several apps
 they earn an `applications.ps1` of their own.
 
-bruno is also the only package outside scoop's `main` bucket, so `tools.ps1`
-adds `extras` first. Cloning a bucket needs git, which is what makes the order
-matter. `dependencies.ps1` is a `run_once_before_` script, so it runs ahead of
-every unprefixed one whatever the numbers say.
+Homebrew ships the whole JetBrains Mono Nerd Font family as one cask. The
+`nerd-fonts` bucket splits it into three manifests, one per variant, so
+`fonts.ps1` lists all three and the family matches on both systems. The cost is
+the same zip downloaded three times, since scoop caches per app rather than per
+url. The manifests install per user and register the font under `HKCU`, so none
+of this needs elevation on Windows 10 1809 or later.
+
+Two buckets beyond the one scoop ships with are in play. `tools.ps1` adds
+`extras` for bruno and `fonts.ps1` adds `nerd-fonts`. Cloning a bucket needs
+git, which is what makes the order matter. `dependencies.ps1` is a
+`run_once_before_` script, so it runs ahead of every unprefixed one whatever the
+numbers say.
 
 One wrinkle has no macOS equivalent. The scoop installer writes the shims to the
 user PATH, and the running chezmoi never re-reads that, so a scoop installed
