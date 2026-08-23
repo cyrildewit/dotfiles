@@ -13,10 +13,26 @@
 Icon?
 .com.apple.timemachine.donotpresent
 
+# Windows
+Thumbs.db
+desktop.ini
+
 # Visual Studio Code
 .vscode/
 *.code-workspace
 .history/
+
+# JetBrains — per-user state only. Ignoring all of .idea/ would silently hide
+# shared files like codeStyles/, and git cannot re-include inside an excluded
+# directory.
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/usage.statistics.xml
+.idea/shelf/
+.idea/dictionaries/
+.idea/httpRequests/
+.idea/caches/
+*.iws
 
 # Vim / Neovim
 *~
