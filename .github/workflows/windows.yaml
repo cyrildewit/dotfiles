@@ -159,6 +159,27 @@ jobs:
               }
           }
 
+      - name: Check every npm package still resolves
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
+
+          # npm-tools.ps1 resolved these against the registry during the
+          # bootstrap, because CI never installs nodejs-lts and so has no npm
+          # to ask. This repeats the check on its own so a failure names the
+          # package instead of a script.
+          foreach ($package in @(
+              'ccusage'
+          )) {
+              Write-Host "Checking $package"
+
+              try {
+                  Invoke-RestMethod -Uri "https://registry.npmjs.org/$package/latest" | Out-Null
+              } catch {
+                  throw "the npm registry does not carry $package"
+              }
+          }
+
       - name: Check the winget package still resolves
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
