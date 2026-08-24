@@ -38,32 +38,32 @@ chezmoi init --prompt
 
 ### macOS
 
-| Script | Installs | Personal | Work |
-| --- | --- | :-: | :-: |
-| `command_line_tools.sh` | Xcode Command Line Tools | ✓ | ✓ |
-| `homebrew.sh` | Homebrew | ✓ | ✓ |
-| `dependencies.sh` | `chezmoi`, `gh`, `git`, `zsh` | ✓ | ✓ |
-| `oh_my_posh.sh` | `oh-my-posh` | ✓ | ✓ |
-| `docker.sh` | `docker-desktop` | ✓ | ✓ |
-| `tools.sh` | `eza`, `htop`, `zsh-autosuggestions` | ✓ | ✓ |
-| `applications.sh` | `1password`, `1password-cli`, `betterdisplay`, `brave-browser`, `claude`, `claude-code`, `ghostty`, `jetbrains-toolbox`, `logi-options+`, `macsyzones`, `obsidian`, `spotify`, `todoist-app`, `visual-studio-code` | ✓ | ✓ |
-| `fonts.sh` | `font-jetbrains-mono-nerd-font` | ✓ | ✓ |
-| `personal/applications.sh` | `proton-drive`, `proton-mail`, `proton-pass` | ✓ | — |
-| `optional/dotnet.sh` | `dotnet`, `aspire` | opt-in | opt-in |
+| Script                     | Installs                                                                                                                                                                                                           | Personal |  Work  |
+|----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------:|:------:|
+| `command_line_tools.sh`    | Xcode Command Line Tools                                                                                                                                                                                           |    ✓     |   ✓    |
+| `homebrew.sh`              | Homebrew                                                                                                                                                                                                           |    ✓     |   ✓    |
+| `dependencies.sh`          | `chezmoi`, `gh`, `git`, `zsh`                                                                                                                                                                                      |    ✓     |   ✓    |
+| `oh_my_posh.sh`            | `oh-my-posh`                                                                                                                                                                                                       |    ✓     |   ✓    |
+| `docker.sh`                | `docker-desktop`                                                                                                                                                                                                   |    ✓     |   ✓    |
+| `tools.sh`                 | `eza`, `htop`, `zsh-autosuggestions`                                                                                                                                                                               |    ✓     |   ✓    |
+| `applications.sh`          | `1password`, `1password-cli`, `betterdisplay`, `brave-browser`, `claude`, `claude-code`, `ghostty`, `jetbrains-toolbox`, `logi-options+`, `macsyzones`, `obsidian`, `spotify`, `todoist-app`, `visual-studio-code` |    ✓     |   ✓    |
+| `fonts.sh`                 | `font-jetbrains-mono-nerd-font`                                                                                                                                                                                    |    ✓     |   ✓    |
+| `personal/applications.sh` | `proton-drive`, `proton-mail`, `proton-pass`                                                                                                                                                                       |    ✓     |   —    |
+| `optional/dotnet.sh`       | `dotnet`, `aspire`                                                                                                                                                                                                 |  opt-in  | opt-in |
 
 Everything above is skipped when it is already installed, including apps that
 were installed by hand rather than through Homebrew.
 
 ### Windows
 
-| Script | Installs | Personal | Work |
-| --- | --- | :-: | :-: |
-| `scoop.ps1` | scoop | ✓ | ✓ |
-| `dependencies.ps1` | `1password-cli`, `chezmoi`, `gh`, `git` | ✓ | ✓ |
-| `tools.ps1` | `claude-code`, `eza`, `nodejs-lts`, `vim` | ✓ | ✓ |
-| `applications.ps1` | `brave`, `bruno`, `claude`, `jetbrains-toolbox`, `vscode` | ✓ | ✓ |
-| `onepassword.ps1` | `AgileBits.1Password`, through winget | ✓ | ✓ |
-| `fonts.ps1` | `JetBrainsMono-NF`, `JetBrainsMono-NF-Mono`, `JetBrainsMono-NF-Propo` | ✓ | ✓ |
+| Script             | Installs                                                              | Personal | Work |
+|--------------------|-----------------------------------------------------------------------|:--------:|:----:|
+| `scoop.ps1`        | scoop                                                                 |    ✓     |  ✓   |
+| `dependencies.ps1` | `1password-cli`, `chezmoi`, `gh`, `git`                               |    ✓     |  ✓   |
+| `tools.ps1`        | `claude-code`, `eza`, `nodejs-lts`, `vim`                             |    ✓     |  ✓   |
+| `applications.ps1` | `brave`, `bruno`, `claude`, `jetbrains-toolbox`, `vscode`             |    ✓     |  ✓   |
+| `onepassword.ps1`  | `AgileBits.1Password`, through winget                                 |    ✓     |  ✓   |
+| `fonts.ps1`        | `JetBrainsMono-NF`, `JetBrainsMono-NF-Mono`, `JetBrainsMono-NF-Propo` |    ✓     |  ✓   |
 
 `applications.ps1` cannot skip an application that was installed by hand, since
 Windows has no equivalent of `/Applications` to check: an installer can land in
@@ -72,13 +72,13 @@ its own copy alongside, which for a browser means a second profile.
 
 ## Layout
 
-| Path | |
-| --- | --- |
-| `home/` | the chezmoi source directory, per `.chezmoiroot` |
-| `home/.chezmoiscripts/<os>/` | shims that include the install scripts |
-| `install/<os>/` | machine setup, shell on macOS and PowerShell on Windows |
-| `scripts/<os>/` | helpers a `run_after_` shim includes |
-| `docs/` | conventions and caveats that nothing here enforces |
+| Path                         |                                                         |
+|------------------------------|---------------------------------------------------------|
+| `home/`                      | the chezmoi source directory, per `.chezmoiroot`        |
+| `home/.chezmoiscripts/<os>/` | shims that include the install scripts                  |
+| `install/<os>/`              | machine setup, shell on macOS and PowerShell on Windows |
+| `scripts/<os>/`              | helpers a `run_after_` shim includes                    |
+| `docs/`                      | conventions and caveats that nothing here enforces      |
 
 The install scripts are plain and standalone. chezmoi runs them through a shim:
 
