@@ -89,7 +89,7 @@ jobs:
           # `brew install`. Anything renamed or removed upstream would already
           # have failed the bootstrap step; this repeats the check on its own so
           # a failure names the package instead of a script.
-          for formula in chezmoi gh git zsh htop zsh-autosuggestions; do
+          for formula in chezmoi gh git zsh ccusage htop zsh-autosuggestions; do
             echo "Checking ${formula}"
             brew info --formula "${formula}" > /dev/null
           done
