@@ -2,6 +2,13 @@
     name = {{ .full_name | quote }}
     email = {{ .email | quote }}
 
+{{ if eq .chezmoi.os "windows" -}}
+[core]
+    # Git's bundled MSYS ssh cannot reach the 1Password agent on the standard
+    # OpenSSH named pipe. Windows OpenSSH can.
+    sshCommand = C:/Windows/System32/OpenSSH/ssh.exe
+
+{{ end -}}
 [include]
     path = config-personal
 
