@@ -28,9 +28,13 @@
     ],
     "profiles": 
     {
-        "defaults": 
+        "defaults":
         {
             "colorScheme": "Tango Light",
+            "font":
+            {
+                "face": "JetBrainsMono Nerd Font Mono"
+            },
             "opacity": 90
         },
         "list": 
