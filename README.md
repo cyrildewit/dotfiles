@@ -19,20 +19,7 @@ irm https://raw.githubusercontent.com/cyrildewit/dotfiles/main/setup.ps1 | iex
 Both scripts install a package manager (Homebrew on macOS, scoop on Windows),
 install chezmoi with it, then run `chezmoi init --apply`, which clones this
 repository, asks its questions and runs the install scripts. Running either on
-a machine that is already set up changes nothing. Both read
-`DOTFILES_REPO_URL`, `DOTFILES_BRANCH` and `DOTFILES_DEBUG` from the
-environment rather than taking parameters; the header comment in each explains
-why, along with the rest of the choices behind it.
-
-`chezmoi init` asks whether this is a `personal` or a `work` machine, and asks
-once for each optional toolchain (`dotnet`). The answers land in
-`~/.config/chezmoi/chezmoi.toml`, which stays on the machine and is never
-committed. Optional toolchains default to off, so `--promptDefaults` installs
-none of them. To answer the questions again:
-
-```sh
-chezmoi init --prompt
-```
+a machine that is already set up changes nothing.
 
 ## What gets installed
 
