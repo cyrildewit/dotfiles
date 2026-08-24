@@ -18,7 +18,7 @@ if [ "${DOTFILES_DEBUG:-}" ]; then
     set -x
 fi
 
-readonly DOTFILES_REPO_URL="${DOTFILES_REPO_URL:-https://github.com/cyrildewit/dotfiles.git}"
+readonly DOTFILES_REPO_URL="${DOTFILES_REPO_URL:-git@github.com:cyrildewit/dotfiles.git}"
 readonly DOTFILES_BRANCH="${DOTFILES_BRANCH:-}"
 readonly HOMEBREW_INSTALLER_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
 

@@ -45,7 +45,7 @@ if ($env:DOTFILES_DEBUG) {
 $DotfilesRepoUrl = if ($env:DOTFILES_REPO_URL) {
     $env:DOTFILES_REPO_URL
 } else {
-    'https://github.com/cyrildewit/dotfiles.git'
+    'git@github.com:cyrildewit/dotfiles.git'
 }
 
 $DotfilesBranch = $env:DOTFILES_BRANCH
