@@ -19,15 +19,14 @@
     A machine-scope msi needs elevation, which chezmoi run from an ordinary
     shell does not have. That is checked before the install so the message
     names the cause, and being a run_once_ script it runs again on the next
-    apply, so an elevated shell is the whole retry. Failing rather than
-    skipping is deliberate: git signs commits through op-ssh-sign, so a skipped
-    install leaves signing broken with nothing in the output to say why.
+    apply, so an elevated shell is the whole retry. It fails rather than skips
+    because git signs commits through op-ssh-sign, and a skipped install leaves
+    signing broken with nothing in the output to say why.
 
-    Presence is checked twice, the way docker.sh checks Homebrew and then the
-    app bundle. winget answers whether it installed the app, and the directory
-    under Program Files answers whether anything did. The directory is what
-    gets checked rather than op-ssh-sign.exe itself, since the exe sits under a
-    major-version segment that moves when the next major version ships.
+    Presence is checked twice: winget answers whether it installed the app, and
+    the directory under Program Files answers whether anything did. The
+    directory is checked rather than op-ssh-sign.exe itself, since the exe sits
+    under a major-version segment that moves when the next major version ships.
 
     winget comes with App Installer, which a Windows Server image does not
     carry, so a CI run with no winget to resolve through says so and returns.
@@ -47,9 +46,8 @@ $AppDirectory = '1Password'
 function Test-CI {
     <#
     .DESCRIPTION
-        Report whether this is a continuous integration run. CI resolves the
-        package rather than installing it, which still catches a renamed or
-        withdrawn package without paying for the download.
+        CI resolves the package rather than installing it: enough to catch a
+        renamed or withdrawn package without paying for the download.
     #>
 
     return ($env:CI -eq 'true')
@@ -58,10 +56,10 @@ function Test-CI {
 function Get-ProgramFiles {
     <#
     .DESCRIPTION
-        Print the 64-bit Program Files directory. ProgramW6432 is set only in a
-        32-bit process, where ProgramFiles names the x86 directory instead, so
-        reading it first keeps this on the directory a machine-scope installer
-        writes to whichever powershell.exe ran the script.
+        ProgramW6432 is set only in a 32-bit process, where ProgramFiles names
+        the x86 directory instead, so reading it first keeps this on the
+        directory a machine-scope installer writes to whichever powershell.exe
+        ran the script.
     #>
 
     if ($env:ProgramW6432) {
@@ -76,12 +74,6 @@ function Get-AppPath {
 }
 
 function Test-AppPresent {
-    <#
-    .DESCRIPTION
-        Report whether the app is on the machine, whoever installed it, which
-        is what bundle_path_for answers on the macOS side.
-    #>
-
     return (Test-Path -LiteralPath (Get-AppPath) -PathType Container)
 }
 
@@ -92,11 +84,9 @@ function Test-WingetPresent {
 function Test-WingetManaged {
     <#
     .DESCRIPTION
-        Report whether winget already manages the package, which is what
-        `brew list --cask` answers on the macOS side. The exit code is the part
-        worth reading: zero when something matched and non-zero when nothing
-        did. No --source, so a copy that arrived some other way still
-        correlates through Programs and Features.
+        The exit code is the part worth reading: zero when something matched
+        and non-zero when nothing did. No --source, so a copy that arrived some
+        other way still correlates through Programs and Features.
     #>
 
     winget list --id $Package --exact --accept-source-agreements | Out-Null
@@ -112,12 +102,6 @@ function Test-Elevated {
 }
 
 function Resolve-Package {
-    <#
-    .DESCRIPTION
-        Ask winget for the package without installing it, the counterpart to
-        `brew info --cask`.
-    #>
-
     Write-Host "Resolving $Package."
 
     $arguments = @(
@@ -157,10 +141,9 @@ function Install-App {
         throw "winget install $Package exited with $LASTEXITCODE."
     }
 
-    # Checked by outcome, the way the scoop scripts check theirs. A winget that
-    # reported success after installing the per-user msix would leave the app
-    # on the machine and onepassword_signer pointing at nothing, and that only
-    # surfaces at the next signed commit.
+    # A winget that reported success after installing the per-user msix would
+    # leave the app on the machine and onepassword_signer pointing at nothing,
+    # and that only surfaces at the next signed commit.
     if (-not (Test-AppPresent)) {
         throw "winget installed $Package somewhere other than $(Get-AppPath)."
     }

@@ -9,11 +9,9 @@
     not an error anywhere, it just leaves an application falling back to a
     default without saying so.
 
-    Homebrew ships the whole JetBrains Mono Nerd Font family as one cask. The
-    nerd-fonts bucket splits it into three manifests, one per variant, and all
-    three are listed so the family is the same on both systems. The cost is the
-    same zip downloaded three times, since scoop caches per app rather than per
-    url.
+    The nerd-fonts bucket splits the JetBrains Mono Nerd Font family into three
+    manifests, one per variant, all of which are listed. scoop caches per app
+    rather than per url, so that is the same zip downloaded three times.
 
     The manifests install per user and register the font under HKCU, so this
     needs no elevation on Windows 10 1809 or later. Anything older can only
@@ -44,8 +42,8 @@ $Packages = @(
 function Get-ScoopRoot {
     <#
     .DESCRIPTION
-        Print where scoop keeps itself. Honours a pre-set SCOOP, which is how
-        an existing install can already have been moved off the profile.
+        Honours a pre-set SCOOP, which is how an existing install can already
+        have been moved off the profile.
     #>
 
     if ($env:SCOOP) {
@@ -60,10 +58,8 @@ function Get-ScoopRoot {
 function Enable-Scoop {
     <#
     .DESCRIPTION
-        Put the scoop shims on PATH for the remainder of this script. Repeated
-        from scoop.ps1 rather than shared with it: chezmoi runs the install
-        scripts as siblings, so a scoop that script installed mid-apply is not
-        on the PATH this one inherited.
+        chezmoi runs the install scripts as siblings, so a scoop that an
+        earlier one installed mid-apply is not on the PATH this one inherited.
     #>
 
     $shims = Join-Path (Get-ScoopRoot) 'shims'
@@ -80,9 +76,8 @@ function Enable-Scoop {
 function Test-CI {
     <#
     .DESCRIPTION
-        Report whether this is a continuous integration run. CI resolves
-        packages rather than installing them, which still catches a renamed or
-        misspelled name without paying for the download.
+        CI resolves packages rather than installing them: enough to catch a
+        renamed name without paying for the download.
     #>
 
     return ($env:CI -eq 'true')
@@ -91,9 +86,8 @@ function Test-CI {
 function Test-BucketAdded {
     <#
     .DESCRIPTION
-        Report whether a bucket is already known. Read off disk rather than
-        from `scoop bucket list`, whose output has been a list of names in some
-        versions and a table of objects in others.
+        Read off disk rather than from `scoop bucket list`, whose output has
+        been a list of names in some versions and a table of objects in others.
     #>
 
     param([Parameter(Mandatory = $true)][string] $Name)
@@ -106,8 +100,8 @@ function Test-BucketAdded {
 function Add-MissingBuckets {
     <#
     .DESCRIPTION
-        Add whichever entries of $Buckets are not known yet. Adding one that is
-        already there is an error rather than a no-op, so each is checked first.
+        Adding a bucket that is already there is an error rather than a
+        no-op, so each is checked first.
     #>
 
     foreach ($bucket in $Buckets) {
@@ -130,10 +124,9 @@ function Add-MissingBuckets {
 function Test-PackageInstalled {
     <#
     .DESCRIPTION
-        Report whether scoop installed a package. Read off disk rather than
-        from `scoop list`, which prints a formatted table and, being a script
-        rather than a process, leaves $LASTEXITCODE saying nothing about how it
-        went.
+        Read off disk rather than from `scoop list`, which prints a formatted
+        table and, being a script rather than a process, leaves $LASTEXITCODE
+        saying nothing about how it went.
 
         A family dropped into the user font directory by hand is invisible
         here and gets installed again alongside itself, which costs a download
@@ -150,12 +143,11 @@ function Test-PackageInstalled {
 function Test-ManifestKnown {
     <#
     .DESCRIPTION
-        Report whether an added bucket carries a manifest for a package, which
-        is what `brew info` answers on the macOS side. Read off disk rather
-        than from `scoop cat` or `scoop info`, which print through the host in
-        some versions rather than down the pipeline, and host output is nothing
-        a script can capture. Official buckets keep manifests under `bucket`
-        and third-party ones sometimes at the root, so both are searched.
+        Read off disk rather than from `scoop cat` or `scoop info`, which
+        print through the host in some versions rather than down the pipeline,
+        and host output is nothing a script can capture. Official buckets keep
+        manifests under `bucket` and third-party ones sometimes at the root, so
+        both are searched.
     #>
 
     param([Parameter(Mandatory = $true)][string] $Name)
@@ -174,12 +166,6 @@ function Test-ManifestKnown {
 }
 
 function Install-MissingPackages {
-    <#
-    .DESCRIPTION
-        Install whichever entries of $Packages are still missing, batched into
-        a single scoop invocation.
-    #>
-
     $pending = @($Packages | Where-Object { -not (Test-PackageInstalled -Name $_) })
 
     if ($pending.Count -eq 0) {

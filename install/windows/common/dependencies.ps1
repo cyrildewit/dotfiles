@@ -10,20 +10,12 @@
     find. Anything that needs a bucket other than main, or any setup after the
     install, gets its own script rather than a line here.
 
-    chezmoi is listed even though it is what runs this script. setup.ps1 has
-    already installed it through scoop, and naming it here means the two agree
-    about who owns it, so `scoop update` keeps it current.
-
     1password-cli has to arrive this early:
     home/dot_config/git/config-personal.tmpl calls onepasswordRead, so chezmoi
     shells out to op while it renders the file, and a machine without op fails
     the apply outright. Installing it from a run_once_before_ script puts op on
     disk before any file is written. A CI run never reaches that branch, since
     the template checks .ci first.
-
-    The 1Password desktop app that sits beside the CLI on macOS has no line
-    here, because no bucket carries a manifest for it. onepassword.ps1 installs
-    it with winget instead.
 #>
 
 Set-StrictMode -Version Latest
@@ -43,8 +35,8 @@ $Packages = @(
 function Get-ScoopRoot {
     <#
     .DESCRIPTION
-        Print where scoop keeps itself. Honours a pre-set SCOOP, which is how
-        an existing install can already have been moved off the profile.
+        Honours a pre-set SCOOP, which is how an existing install can already
+        have been moved off the profile.
     #>
 
     if ($env:SCOOP) {
@@ -59,10 +51,8 @@ function Get-ScoopRoot {
 function Enable-Scoop {
     <#
     .DESCRIPTION
-        Put the scoop shims on PATH for the remainder of this script. Repeated
-        from scoop.ps1 rather than shared with it: chezmoi runs the install
-        scripts as siblings, so a scoop that script installed mid-apply is not
-        on the PATH this one inherited.
+        chezmoi runs the install scripts as siblings, so a scoop that an
+        earlier one installed mid-apply is not on the PATH this one inherited.
     #>
 
     $shims = Join-Path (Get-ScoopRoot) 'shims'
@@ -79,9 +69,8 @@ function Enable-Scoop {
 function Test-CI {
     <#
     .DESCRIPTION
-        Report whether this is a continuous integration run. CI resolves
-        packages rather than installing them, which still catches a renamed or
-        misspelled name without paying for the download.
+        CI resolves packages rather than installing them: enough to catch a
+        renamed name without paying for the download.
     #>
 
     return ($env:CI -eq 'true')
@@ -90,10 +79,9 @@ function Test-CI {
 function Test-PackageInstalled {
     <#
     .DESCRIPTION
-        Report whether scoop installed a package. Read off disk rather than
-        from `scoop list`, which prints a formatted table and, being a script
-        rather than a process, leaves $LASTEXITCODE saying nothing about how it
-        went.
+        Read off disk rather than from `scoop list`, which prints a formatted
+        table and, being a script rather than a process, leaves $LASTEXITCODE
+        saying nothing about how it went.
     #>
 
     param([Parameter(Mandatory = $true)][string] $Name)
@@ -106,12 +94,11 @@ function Test-PackageInstalled {
 function Test-ManifestKnown {
     <#
     .DESCRIPTION
-        Report whether an added bucket carries a manifest for a package, which
-        is what `brew info` answers on the macOS side. Read off disk rather
-        than from `scoop cat` or `scoop info`, which print through the host in
-        some versions rather than down the pipeline, and host output is nothing
-        a script can capture. Official buckets keep manifests under `bucket`
-        and third-party ones sometimes at the root, so both are searched.
+        Read off disk rather than from `scoop cat` or `scoop info`, which
+        print through the host in some versions rather than down the pipeline,
+        and host output is nothing a script can capture. Official buckets keep
+        manifests under `bucket` and third-party ones sometimes at the root, so
+        both are searched.
     #>
 
     param([Parameter(Mandatory = $true)][string] $Name)
@@ -130,12 +117,6 @@ function Test-ManifestKnown {
 }
 
 function Install-MissingPackages {
-    <#
-    .DESCRIPTION
-        Install whichever entries of $Packages are still missing, batched into
-        a single scoop invocation.
-    #>
-
     $pending = @($Packages | Where-Object { -not (Test-PackageInstalled -Name $_) })
 
     if ($pending.Count -eq 0) {

@@ -8,10 +8,6 @@
     The Windows counterpart to install/macos/common/tools.sh. Installs packages
     that are wanted on the machine but that nothing in this repository requires,
     so a machine without them still gets a working configuration.
-
-    Every entry comes from main, the bucket scoop ships with, so unlike
-    applications.ps1 and fonts.ps1 this adds none. Anything needing another
-    bucket belongs in one of those or in a script of its own.
 #>
 
 Set-StrictMode -Version Latest
@@ -31,8 +27,8 @@ $Packages = @(
 function Get-ScoopRoot {
     <#
     .DESCRIPTION
-        Print where scoop keeps itself. Honours a pre-set SCOOP, which is how
-        an existing install can already have been moved off the profile.
+        Honours a pre-set SCOOP, which is how an existing install can already
+        have been moved off the profile.
     #>
 
     if ($env:SCOOP) {
@@ -47,10 +43,8 @@ function Get-ScoopRoot {
 function Enable-Scoop {
     <#
     .DESCRIPTION
-        Put the scoop shims on PATH for the remainder of this script. Repeated
-        from scoop.ps1 rather than shared with it: chezmoi runs the install
-        scripts as siblings, so a scoop that script installed mid-apply is not
-        on the PATH this one inherited.
+        chezmoi runs the install scripts as siblings, so a scoop that an
+        earlier one installed mid-apply is not on the PATH this one inherited.
     #>
 
     $shims = Join-Path (Get-ScoopRoot) 'shims'
@@ -67,9 +61,8 @@ function Enable-Scoop {
 function Test-CI {
     <#
     .DESCRIPTION
-        Report whether this is a continuous integration run. CI resolves
-        packages rather than installing them, which still catches a renamed or
-        misspelled name without paying for the download.
+        CI resolves packages rather than installing them: enough to catch a
+        renamed name without paying for the download.
     #>
 
     return ($env:CI -eq 'true')
@@ -78,10 +71,9 @@ function Test-CI {
 function Test-PackageInstalled {
     <#
     .DESCRIPTION
-        Report whether scoop installed a package. Read off disk rather than
-        from `scoop list`, which prints a formatted table and, being a script
-        rather than a process, leaves $LASTEXITCODE saying nothing about how it
-        went.
+        Read off disk rather than from `scoop list`, which prints a formatted
+        table and, being a script rather than a process, leaves $LASTEXITCODE
+        saying nothing about how it went.
     #>
 
     param([Parameter(Mandatory = $true)][string] $Name)
@@ -94,12 +86,11 @@ function Test-PackageInstalled {
 function Test-ManifestKnown {
     <#
     .DESCRIPTION
-        Report whether an added bucket carries a manifest for a package, which
-        is what `brew info` answers on the macOS side. Read off disk rather
-        than from `scoop cat` or `scoop info`, which print through the host in
-        some versions rather than down the pipeline, and host output is nothing
-        a script can capture. Official buckets keep manifests under `bucket`
-        and third-party ones sometimes at the root, so both are searched.
+        Read off disk rather than from `scoop cat` or `scoop info`, which
+        print through the host in some versions rather than down the pipeline,
+        and host output is nothing a script can capture. Official buckets keep
+        manifests under `bucket` and third-party ones sometimes at the root, so
+        both are searched.
     #>
 
     param([Parameter(Mandatory = $true)][string] $Name)
@@ -118,12 +109,6 @@ function Test-ManifestKnown {
 }
 
 function Install-MissingPackages {
-    <#
-    .DESCRIPTION
-        Install whichever entries of $Packages are still missing, batched into
-        a single scoop invocation.
-    #>
-
     $pending = @($Packages | Where-Object { -not (Test-PackageInstalled -Name $_) })
 
     if ($pending.Count -eq 0) {

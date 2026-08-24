@@ -12,14 +12,6 @@
     A machine bootstrapped with setup.ps1 already has scoop, so this does
     nothing there. It is here for the other way in, a `chezmoi apply` on a
     machine that got chezmoi some other way and has no package manager yet.
-
-    Enable-Scoop only widens PATH for this process. The chezmoi scripts that
-    run after this one are siblings rather than children, so each has to enable
-    scoop for itself.
-
-    setup.ps1 repeats the install and enable steps, for the reason setup.sh
-    gives about Homebrew: the bootstrap has to work on a machine where this
-    repository has not been cloned, so it cannot include anything from it.
 #>
 
 Set-StrictMode -Version Latest
@@ -44,8 +36,8 @@ function Test-ScoopInstalled {
 function Test-Administrator {
     <#
     .DESCRIPTION
-        Report whether this session is elevated, which is the one thing the
-        scoop installer needs told rather than left to discover.
+        The scoop installer has to be told, rather than discovering this
+        itself.
     #>
 
     $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
@@ -57,7 +49,6 @@ function Test-Administrator {
 function Get-ScoopRoot {
     <#
     .DESCRIPTION
-        Print where scoop keeps itself, the counterpart to homebrew_prefix.
         Honours a pre-set SCOOP, which is how an existing install can already
         have been moved off the profile.
     #>
@@ -72,13 +63,6 @@ function Get-ScoopRoot {
 }
 
 function Install-Scoop {
-    <#
-    .DESCRIPTION
-        Install scoop when it is missing. It installs into the user profile and
-        asks for nothing, so there is no unattended-mode flag to set the way
-        the Homebrew installer needs NONINTERACTIVE.
-    #>
-
     if (Test-ScoopInstalled) {
         return
     }
@@ -100,9 +84,8 @@ function Install-Scoop {
 function Enable-Scoop {
     <#
     .DESCRIPTION
-        Put the scoop shims on PATH for the remainder of this script. The
-        installer writes them to the user environment, which this process read
-        when it started and will not read again.
+        The installer writes the shims to the user environment, which this
+        process read when it started and will not read again.
     #>
 
     $shims = Join-Path (Get-ScoopRoot) 'shims'
