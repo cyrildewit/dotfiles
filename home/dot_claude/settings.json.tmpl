@@ -9,7 +9,8 @@
   },
   "env": {
     "DISABLE_TELEMETRY": "1",
-    "DISABLE_ERROR_REPORTING": "1"
+    "DISABLE_ERROR_REPORTING": "1"{{ if eq .chezmoi.os "windows" }},
+    "CLAUDE_CODE_USE_POWERSHELL_TOOL": "1"{{ end }}
   },
   "permissions": {
     "deny": [
