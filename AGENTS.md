@@ -11,6 +11,4 @@
   questions. Those belong in the commit message or in `docs/`.
 - Never write for a diff reviewer. No "fixed", no "updated to", no "now
   handles". A comment must still make sense read fresh, months later.
-- Keep `@file` blocks to what the file is for. Instructions for extending it go
-  in `README.md`.
 - When a comment carries a real gotcha, keep it and cut it to the fewest words.
