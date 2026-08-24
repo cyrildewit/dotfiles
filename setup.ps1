@@ -8,22 +8,14 @@
     The counterpart to setup.sh. Gets a package manager and chezmoi onto the
     machine, then hands over to `chezmoi init --apply`, which clones this
     repository and runs everything chezmoi finds under `.chezmoiscripts/`.
-    Running it again on a machine that is already set up is a no-op. There is
-    no `bootstrap_os` here the way setup.sh has one, since this file only ever
-    runs on one operating system.
-
-    scoop rather than winget. scoop installs per-user and needs no elevation,
-    which is the most a managed machine can be relied on to allow, and it needs
-    nothing from the Microsoft Store to exist first. Swapping it means
-    rewriting `Install-Chezmoi` and `Install-Scoop` and nothing else.
+    Running it again on a machine that is already set up is a no-op.
 
     Written for Windows PowerShell 5.1, the one PowerShell every Windows
-    machine has, so there is no `$PSNativeCommandUseErrorActionPreference`
-    here: a failing executable does not throw, and is checked by hand.
+    machine has, so a failing executable does not throw and is checked by hand.
 
-    Configured through the environment rather than parameters, the same as
-    setup.sh, because the documented invocation pipes the script into
-    `Invoke-Expression` and there is nothing to bind parameters to:
+    Read from the environment rather than taken as parameters, because the
+    documented invocation pipes this script into `Invoke-Expression` and there
+    is nothing to bind parameters to:
 
       DOTFILES_DEBUG      trace every statement
       DOTFILES_REPO_URL   clone somewhere other than the default
@@ -32,10 +24,9 @@
 .EXAMPLE
     irm https://raw.githubusercontent.com/cyrildewit/dotfiles/main/setup.ps1 | iex
 
-    The `irm | iex` shape is deliberate and not just the local idiom for
-    `curl | bash`. A downloaded .ps1 carries a mark-of-the-web and will not run
-    under the default execution policy. Piping the response into the parser
-    never writes a file, so there is no mark and no policy to argue with.
+    A downloaded .ps1 carries a mark-of-the-web and will not run under the
+    default execution policy. Piping the response into the parser never writes
+    a file, so there is no mark and no policy to argue with.
 #>
 
 Set-StrictMode -Version Latest
@@ -63,9 +54,8 @@ $ScoopInstallerUrl = 'https://get.scoop.sh'
 function Test-Interactive {
     <#
     .DESCRIPTION
-        Report whether a console is attached. chezmoi reads its prompts from
-        the console, which CI does not have; `--no-tty` sends it to stdin
-        instead. The direct counterpart to setup.sh's `[ -t 0 ]`.
+        chezmoi reads its prompts from the console, which CI does not have;
+        `--no-tty` sends it to stdin instead.
     #>
 
     return (-not [Console]::IsInputRedirected)
@@ -74,8 +64,8 @@ function Test-Interactive {
 function Test-Administrator {
     <#
     .DESCRIPTION
-        Report whether this session is elevated, which is the one thing the
-        scoop installer needs told rather than left to discover.
+        The scoop installer has to be told, rather than discovering this
+        itself.
     #>
 
     $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
@@ -93,8 +83,8 @@ function Test-Command {
 function Get-ScoopRoot {
     <#
     .DESCRIPTION
-        Print where scoop keeps itself. Honours a pre-set SCOOP, which is how
-        an existing install can already have been moved off the profile.
+        Honours a pre-set SCOOP, which is how an existing install can already
+        have been moved off the profile.
     #>
 
     if ($env:SCOOP) {
@@ -107,13 +97,6 @@ function Get-ScoopRoot {
 }
 
 function Install-Scoop {
-    <#
-    .DESCRIPTION
-        Install scoop when it is missing. It installs into the user profile and
-        asks for nothing, so there is no unattended-mode flag to set the way
-        the Homebrew installer needs NONINTERACTIVE.
-    #>
-
     if (Test-Command -Name 'scoop') {
         return
     }
@@ -135,9 +118,8 @@ function Install-Scoop {
 function Enable-Scoop {
     <#
     .DESCRIPTION
-        Put the scoop shims on PATH for the remainder of this script. The
-        installer writes them to the user environment, which this process read
-        when it started and will not read again.
+        The installer writes the shims to the user environment, which this
+        process read when it started and will not read again.
     #>
 
     $shims = Join-Path (Get-ScoopRoot) 'shims'
@@ -152,14 +134,6 @@ function Enable-Scoop {
 }
 
 function Install-Chezmoi {
-    <#
-    .DESCRIPTION
-        Install chezmoi through scoop. Deliberately not the standalone
-        installer: that leaves a binary in ~/.local/bin that nothing maintains
-        afterwards. Letting the package manager own it means `scoop update`
-        keeps it current.
-    #>
-
     if (Test-Command -Name 'chezmoi') {
         return
     }
@@ -187,10 +161,8 @@ function Install-Dependencies {
 function Invoke-ChezmoiApply {
     <#
     .DESCRIPTION
-        Clone the repository and apply it. `init` prompts for the machine type
-        and the optional toolchains, then `--apply` writes the dotfiles and
-        runs the scripts. Without a console chezmoi reads its answers from
-        stdin instead, which is how CI drives the prompts.
+        Without a console chezmoi reads its answers from stdin, which is how
+        CI drives the prompts.
     #>
 
     $options = @()
