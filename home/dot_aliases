@@ -1,21 +1,18 @@
 # @file home/dot_aliases
 # @brief Shell aliases sourced by every interactive shell.
 # @description
-#   Sourced from .zshrc. Anything that depends on an optional tool defines a
-#   portable version first and overrides it only once the tool is found, so a
-#   machine without that tool still gets a working alias.
+#   Sourced from .zshrc.
 
 alias l="ls -laF"
 
-# eza replaces ls with something that groups directories, colours by file type,
-# and turns paths into terminal hyperlinks. Icons need a Nerd Font, which the
-# Ghostty configuration in this repository asks for by name.
+# Icons need a Nerd Font, which the Ghostty configuration in this repository
+# asks for by name.
 if command -v eza &> /dev/null; then
     alias l="eza -la --icons --group-directories-first --hyperlink"
 
     # An alias cannot take an argument, so the level arrives through a function.
-    # Defaults to level 2 and to the current directory, which eza needs spelled
-    # out: --tree with no path prints nothing and still exits 0.
+    # The current directory has to be spelled out: --tree with no path prints
+    # nothing and still exits 0.
     ltree() {
         local level="${1:-2}"
         (( $# )) && shift
