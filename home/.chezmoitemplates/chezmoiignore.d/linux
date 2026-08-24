@@ -6,3 +6,7 @@
 # ~/Library is a macOS location. The MacsyZones symlinks under it are the only
 # thing in the source tree that targets it.
 Library
+
+# ~/AppData is a Windows location. The Windows Terminal config under it is the
+# only thing in the source tree that targets it.
+AppData
