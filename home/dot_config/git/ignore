@@ -41,3 +41,7 @@ desktop.ini
 *.swn
 Session.vim
 .netrwhist
+
+# CodeGraph. `codegraph init` creates this in whichever repository I enable it
+# on, so no repository should have to carry the ignore line itself.
+.codegraph/
