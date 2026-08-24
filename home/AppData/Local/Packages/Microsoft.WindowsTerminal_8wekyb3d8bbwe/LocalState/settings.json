@@ -28,18 +28,19 @@
     ],
     "profiles": 
     {
-        "defaults":
+        "defaults": 
         {
-            "colorScheme":
+            "colorScheme": 
             {
                 "dark": "Broadcast",
                 "light": "Horizon Bright"
             },
-            "font":
+            "font": 
             {
-                "face": "JetBrainsMono Nerd Font Mono"
+                "face": "JetBrainsMono Nerd Font Mono",
+                "size": 12
             },
-            "opacity": 90
+            "opacity": 100
         },
         "list": 
         [
@@ -69,54 +70,55 @@
             }
         ]
     },
-    "schemes":
+    "schemes": 
     [
         {
-            "background": "#2b2b2b",
+            "background": "#2B2B2B",
             "black": "#000000",
-            "blue": "#6d9cbe",
+            "blue": "#6D9CBE",
             "brightBlack": "#585858",
-            "brightBlue": "#9fcef0",
-            "brightCyan": "#a0cef0",
-            "brightGreen": "#83d182",
-            "brightPurple": "#ffffff",
-            "brightRed": "#ff7b6b",
-            "brightWhite": "#ffffff",
-            "brightYellow": "#ffff7c",
-            "cursorColor": "#ffffff",
-            "cyan": "#6e9cbe",
-            "foreground": "#e6e1dc",
-            "green": "#519f50",
+            "brightBlue": "#9FCEF0",
+            "brightCyan": "#A0CEF0",
+            "brightGreen": "#83D182",
+            "brightPurple": "#FFFFFF",
+            "brightRed": "#FF7B6B",
+            "brightWhite": "#FFFFFF",
+            "brightYellow": "#FFFF7C",
+            "cursorColor": "#FFFFFF",
+            "cyan": "#6E9CBE",
+            "foreground": "#E6E1DC",
+            "green": "#519F50",
             "name": "Broadcast",
-            "purple": "#d0d0ff",
-            "red": "#da4939",
-            "selectionBackground": "#5a647e",
-            "white": "#ffffff",
-            "yellow": "#ffd24a"
+            "purple": "#D0D0FF",
+            "red": "#DA4939",
+            "selectionBackground": "#5A647E",
+            "white": "#FFFFFF",
+            "yellow": "#FFD24A"
         },
         {
-            "background": "#fdf0ed",
-            "black": "#16161d",
-            "blue": "#00bedd",
-            "brightBlack": "#1a1c24",
-            "brightBlue": "#00c9e2",
-            "brightCyan": "#00c3c2",
-            "brightGreen": "#00d193",
-            "brightPurple": "#ff6cba",
-            "brightRed": "#fe5f87",
-            "brightWhite": "#fff2ef",
-            "brightYellow": "#e5a688",
-            "cursorColor": "#d3a89d",
-            "cyan": "#00cdcb",
-            "foreground": "#16161d",
-            "green": "#00ca86",
+            "background": "#FDF0ED",
+            "black": "#16161D",
+            "blue": "#00BEDD",
+            "brightBlack": "#1A1C24",
+            "brightBlue": "#00C9E2",
+            "brightCyan": "#00C3C2",
+            "brightGreen": "#00D193",
+            "brightPurple": "#FF6CBA",
+            "brightRed": "#FE5F87",
+            "brightWhite": "#FFF2EF",
+            "brightYellow": "#E5A688",
+            "cursorColor": "#D3A89D",
+            "cyan": "#00CDCB",
+            "foreground": "#16161D",
+            "green": "#00CA86",
             "name": "Horizon Bright",
-            "purple": "#ff58b1",
-            "red": "#fc4777",
-            "selectionBackground": "#f9cec3",
-            "white": "#bfafac",
-            "yellow": "#f2a682"
+            "purple": "#FF58B1",
+            "red": "#FC4777",
+            "selectionBackground": "#F9CEC3",
+            "white": "#BFAFAC",
+            "yellow": "#F2A682"
         }
     ],
+    "theme": "light",
     "themes": []
 }
