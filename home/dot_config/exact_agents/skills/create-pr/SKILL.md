@@ -72,11 +72,11 @@ carrying a five section description is the loudest signal that nobody wrote it.
 | Size | Lines changed | Sections allowed |
 | --- | --- | --- |
 | Small | under 50, one concern | Summary only |
-| Medium | 50 to 200 | Summary, files table, and at most two more that earn their space |
-| Large | over 200, or several concerns | Every section that applies. Files table and reviewer notes are required |
+| Medium | 50 to 200 | Summary and at most two more that earn their space |
+| Large | over 200, or several concerns | Every section that applies. Reviewer notes are required |
 
-**Budget rule.** For small and medium PRs the body, excluding the files table, is shorter than the
-diff. If it is longer, cut. Cut from the bottom up: Testing first, then How, then Why.
+**Budget rule.** For small and medium PRs the body is shorter than the diff. If it is longer,
+cut. Cut from the bottom up: Testing first, then How, then Why.
 
 ## 3. Find the repository template
 
@@ -145,13 +145,6 @@ Only `## Summary` is required. Every other section has to earn its place through
 <Two sentences. First the problem, concrete where possible: an error, a number, a
 missing capability. Second what this does about it.>
 
-**Files to review (N, +X / -Y):**
-
-| File | Why |
-| --- | --- |
-| `path/to/start-here.cs` *(start here)* | Entry point for the change. |
-| `path/to/other.cs` | Short reason this file changed. |
-
 ## Why
 
 <The problem in detail. Show the failure: the error, the wrong output, the gap it
@@ -177,10 +170,8 @@ Notes on the sections:
 
 - **Summary** is the whole description on a small PR. Two clean sentences. If they will not fit,
   the diff has not been understood well enough yet. Read it again.
-- **Files table** sits under the summary because a reviewer decides where to start reading before
-  reading anything. Mark the entry point with `*(start here)*`.
-- **How** describes the shape of the change, not the steps taken to build it. If it reads like the
-  files table with more words, cut it.
+- **How** describes the shape of the change, not the steps taken to build it. If it reads like a
+  file by file tour, cut it.
 - **Notes for the reviewer** is for facts the diff cannot carry: a fallback path, a deliberate
   omission, a place where a second opinion would help.
 
