@@ -17,26 +17,21 @@ readonly WAIT_TIMEOUT_SECONDS=1800
 readonly WAIT_INTERVAL_SECONDS=5
 
 #
-# @description Check whether an active developer directory is set, which covers
-#   both the Command Line Tools and a full Xcode install.
+# @description An active developer directory covers both the Command Line
+#   Tools and a full Xcode install.
 #
 function is_command_line_tools_installed() {
     xcode-select --print-path &> /dev/null
 }
 
 #
-# @description Ask macOS to install the Command Line Tools.
-#   Exits non-zero when they are already present or an install is in progress,
-#   neither of which is an error here.
+# @description Exits non-zero when they are already present or an install is
+#   in progress, neither of which is an error here.
 #
 function request_command_line_tools() {
     xcode-select --install &> /dev/null || true
 }
 
-#
-# @description Block until the Command Line Tools appear or the timeout passes.
-# @exitcode 1 If the installer did not finish in time.
-#
 function wait_for_command_line_tools() {
     local waited=0
 
@@ -51,9 +46,6 @@ function wait_for_command_line_tools() {
     done
 }
 
-#
-# @description Ensure the Command Line Tools are installed.
-#
 function main() {
     if is_command_line_tools_installed; then
         return 0

@@ -17,25 +17,17 @@ readonly CASK="docker-desktop"
 readonly APP_PATH="/Applications/Docker.app"
 
 #
-# @description Report whether this is a continuous integration run.
-#   CI resolves the cask rather than installing it. That still catches a
-#   renamed or misspelled token without paying for the download.
+# @description CI resolves the cask rather than installing it: enough to catch
+#   a renamed token without paying for the download.
 #
 function is_ci() {
     [ "${CI:-false}" = "true" ]
 }
 
-#
-# @description Report whether Homebrew already manages the cask.
-# @exitcode 0 If the cask is installed.
-#
 function has_cask() {
     brew list --cask "${CASK}" &> /dev/null
 }
 
-#
-# @description Install Docker Desktop unless some copy of it is already here.
-#
 function install_docker() {
     if has_cask; then
         echo "Docker Desktop is already managed by Homebrew."
@@ -56,9 +48,6 @@ function install_docker() {
     brew install --cask "${CASK}"
 }
 
-#
-# @description Ensure Docker Desktop is installed.
-#
 function main() {
     install_docker
 }

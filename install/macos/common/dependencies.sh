@@ -6,10 +6,6 @@
 #   Installs the command-line formulae the shell configuration expects to be
 #   present. Anything that needs a tap, a cask, or post-install setup gets its
 #   own script rather than a line here.
-#
-#   `chezmoi` is listed even though it is what runs this script: a machine
-#   bootstrapped with the standalone installer has a binary nobody maintains,
-#   and this hands it to Homebrew so `brew upgrade` keeps it current.
 
 set -Eeuo pipefail
 
@@ -25,27 +21,17 @@ readonly FORMULAE=(
 )
 
 #
-# @description Report whether this is a continuous integration run.
-#   CI resolves packages rather than installing them. That still catches a
-#   renamed or misspelled token without paying for the download.
+# @description CI resolves packages rather than installing them: enough to
+#   catch a renamed token without paying for the download.
 #
 function is_ci() {
     [ "${CI:-false}" = "true" ]
 }
 
-#
-# @description Report whether a formula is already present locally.
-# @arg $1 string Formula name.
-# @exitcode 0 If the formula is installed.
-#
 function has_formula() {
     brew list --formula "$1" &> /dev/null
 }
 
-#
-# @description Install whichever entries of `FORMULAE` are still missing,
-#   batched into a single brew invocation.
-#
 function install_missing_formulae() {
     local pending=()
     local formula
@@ -69,9 +55,6 @@ function install_missing_formulae() {
     brew install "${pending[@]}"
 }
 
-#
-# @description Ensure the Homebrew dependencies are installed.
-#
 function main() {
     install_missing_formulae
 }

@@ -20,27 +20,17 @@ readonly FORMULAE=(
 )
 
 #
-# @description Report whether this is a continuous integration run.
-#   CI resolves packages rather than installing them. That still catches a
-#   renamed or misspelled token without paying for the download.
+# @description CI resolves packages rather than installing them: enough to
+#   catch a renamed token without paying for the download.
 #
 function is_ci() {
     [ "${CI:-false}" = "true" ]
 }
 
-#
-# @description Report whether a formula is already present locally.
-# @arg $1 string Formula name.
-# @exitcode 0 If the formula is installed.
-#
 function has_formula() {
     brew list --formula "$1" &> /dev/null
 }
 
-#
-# @description Install whichever entries of `FORMULAE` are still missing,
-#   batched into a single brew invocation.
-#
 function install_missing_formulae() {
     local pending=()
     local formula
@@ -64,9 +54,6 @@ function install_missing_formulae() {
     brew install "${pending[@]}"
 }
 
-#
-# @description Ensure the optional tools are installed.
-#
 function main() {
     install_missing_formulae
 }

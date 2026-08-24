@@ -3,9 +3,7 @@
 # @file install/macos/personal/applications.sh
 # @brief Applications that belong on a personal machine only.
 # @description
-#   Installs the casks that have no place on a work machine. The shim including
-#   this file is what decides whether it runs at all, so nothing here needs to
-#   ask which machine it is on.
+#   Installs the casks that have no place on a work machine.
 
 set -Eeuo pipefail
 
@@ -19,11 +17,6 @@ readonly CASKS=(
     proton-pass
 )
 
-#
-# @description Print where a cask puts its app bundle, if it has one.
-# @arg $1 string Cask token.
-# @stdout Absolute path, or nothing.
-#
 function bundle_path_for() {
     case "$1" in
         proton-drive) echo "/Applications/Proton Drive.app" ;;
@@ -34,26 +27,17 @@ function bundle_path_for() {
 }
 
 #
-# @description Report whether this is a continuous integration run.
-#   CI resolves casks rather than installing them. That still catches a
-#   renamed or misspelled token without paying for the download.
+# @description CI resolves casks rather than installing them: enough to catch
+#   a renamed token without paying for the download.
 #
 function is_ci() {
     [ "${CI:-false}" = "true" ]
 }
 
-#
-# @description Report whether Homebrew already manages a cask.
-# @arg $1 string Cask token.
-#
 function has_cask() {
     brew list --cask "$1" &> /dev/null
 }
 
-#
-# @description Install a single cask unless it, or its app bundle, is present.
-# @arg $1 string Cask token.
-#
 function install_cask() {
     local cask="$1"
     local bundle
@@ -79,9 +63,6 @@ function install_cask() {
     brew install --cask "${cask}"
 }
 
-#
-# @description Install every cask in `CASKS` that is still missing.
-#
 function install_applications() {
     local cask
 
@@ -90,9 +71,6 @@ function install_applications() {
     done
 }
 
-#
-# @description Ensure the personal applications are installed.
-#
 function main() {
     install_applications
 }

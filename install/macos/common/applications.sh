@@ -31,11 +31,8 @@ readonly CASKS=(
 )
 
 #
-# @description Print where a cask puts its app bundle, if it has one.
-#   Casks without an entry here install no bundle a manual copy could clash
-#   with, so an empty result means "let brew decide".
-# @arg $1 string Cask token.
-# @stdout Absolute path, or nothing.
+# @description Casks without an entry here install no bundle a manual copy
+#   could clash with, so an empty result means "let brew decide".
 #
 function bundle_path_for() {
     case "$1" in
@@ -53,26 +50,17 @@ function bundle_path_for() {
 }
 
 #
-# @description Report whether this is a continuous integration run.
-#   CI resolves casks rather than installing them. That still catches a
-#   renamed or misspelled token without paying for the download.
+# @description CI resolves casks rather than installing them: enough to catch
+#   a renamed token without paying for the download.
 #
 function is_ci() {
     [ "${CI:-false}" = "true" ]
 }
 
-#
-# @description Report whether Homebrew already manages a cask.
-# @arg $1 string Cask token.
-#
 function has_cask() {
     brew list --cask "$1" &> /dev/null
 }
 
-#
-# @description Install a single cask unless it, or its app bundle, is present.
-# @arg $1 string Cask token.
-#
 function install_cask() {
     local cask="$1"
     local bundle
@@ -98,9 +86,6 @@ function install_cask() {
     brew install --cask "${cask}"
 }
 
-#
-# @description Install every cask in `CASKS` that is still missing.
-#
 function install_applications() {
     local cask
 
@@ -109,9 +94,6 @@ function install_applications() {
     done
 }
 
-#
-# @description Ensure the expected applications are installed.
-#
 function main() {
     install_applications
 }
