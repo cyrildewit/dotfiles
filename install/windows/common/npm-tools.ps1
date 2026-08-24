@@ -20,6 +20,7 @@ if ($env:DOTFILES_DEBUG) {
 }
 
 $Packages = @(
+    '@colbymchenry/codegraph'
     'ccusage'
 )
 

@@ -169,6 +169,7 @@ jobs:
           # to ask. This repeats the check on its own so a failure names the
           # package instead of a script.
           foreach ($package in @(
+              '@colbymchenry/codegraph'
               'ccusage'
           )) {
               Write-Host "Checking $package"
