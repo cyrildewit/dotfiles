@@ -32,6 +32,9 @@ jobs:
     steps:
       - name: Run setup.ps1 the way the README documents
         env:
+          # CI runners have no SSH key for the repo, so override the SSH default
+          # in setup.ps1 and clone the public repo over HTTPS instead.
+          DOTFILES_REPO_URL: https://github.com/cyrildewit/dotfiles.git
           EVENT_NAME: ${{ github.event_name }}
           PUSH_BRANCH: ${{ github.ref_name }}
           PR_BRANCH: ${{ github.head_ref }}
