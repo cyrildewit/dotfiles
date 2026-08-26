@@ -160,10 +160,6 @@ unless the change is large.>
 
 - **Bolded headline, then the detail.** One bullet per non-obvious fact.
 - **Focus area:** where a second opinion is worth most.
-
-## Testing
-
-<What is covered, what is not, how to run it.>
 ```
 
 Notes on the sections:
