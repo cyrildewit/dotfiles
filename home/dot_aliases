@@ -4,6 +4,7 @@
 #   Sourced from .zshrc.
 
 alias l="ls -laF"
+alias c="claude"
 
 # Icons need a Nerd Font, which the Ghostty configuration in this repository
 # asks for by name.
