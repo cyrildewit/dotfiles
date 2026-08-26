@@ -3,3 +3,7 @@
 # ~/AppData is a Windows location. The Windows Terminal config under it is the
 # only thing in the source tree that targets it.
 AppData
+
+# The PowerShell profile is loaded on Windows. macOS runs zsh, which reads
+# .aliases instead.
+.config/powershell

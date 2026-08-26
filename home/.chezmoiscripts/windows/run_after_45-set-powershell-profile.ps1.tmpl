@@ -1,0 +1,3 @@
+{{ if eq .chezmoi.os "windows" -}}
+{{   include "../scripts/windows/set-powershell-profile.ps1" }}
+{{- end }}
