@@ -110,6 +110,7 @@ jobs:
               '.claude\CLAUDE.md'
               '.claude\rules\ask-user-question.md'
               '.ssh\config'
+              'AppData\Roaming\herdr\config.toml'
           )) {
               $path = Join-Path $env:USERPROFILE $file
               Write-Host "Checking $path"
@@ -145,6 +146,7 @@ jobs:
               'claude'
               'claude-code'
               'eza'
+              'herdr'
               'jetbrains-toolbox'
               'nodejs-lts'
               'vim'

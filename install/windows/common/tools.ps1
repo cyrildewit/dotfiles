@@ -20,6 +20,7 @@ if ($env:DOTFILES_DEBUG) {
 $Packages = @(
     'claude-code'
     'eza'
+    'herdr'
     'nodejs-lts'
     'vim'
 )

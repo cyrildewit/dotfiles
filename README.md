@@ -52,7 +52,7 @@ stopped.
 |--------------------|-----------------------------------------------------------------------|:--------:|:----:|
 | `scoop.ps1`        | scoop                                                                 |    ✓     |  ✓   |
 | `dependencies.ps1` | `1password-cli`, `chezmoi`, `gh`, `git`                               |    ✓     |  ✓   |
-| `tools.ps1`        | `claude-code`, `eza`, `nodejs-lts`, `vim`                             |    ✓     |  ✓   |
+| `tools.ps1`        | `claude-code`, `eza`, `herdr`, `nodejs-lts`, `vim`                    |    ✓     |  ✓   |
 | `npm-tools.ps1`    | `@colbymchenry/codegraph`, `ccusage`, through npm                     |    ✓     |  ✓   |
 | `applications.ps1` | `brave`, `bruno`, `claude`, `jetbrains-toolbox`, `vscode`             |    ✓     |  ✓   |
 | `onepassword.ps1`  | `AgileBits.1Password`, through winget                                 |    ✓     |  ✓   |
@@ -62,5 +62,10 @@ stopped.
 Windows has no equivalent of `/Applications` to check: an installer can land in
 Program Files or under `LOCALAPPDATA`, per-machine or per-user. scoop installs
 its own copy alongside, which for a browser means a second profile.
+
+scoop has no `brew services`, so nothing registers the herdr server here. The
+first `herdr` starts one, and its panes keep running once the client detaches.
+Its config is written to `%APPDATA%\herdr` rather than `~/.config`, from the
+same template the macOS copy renders.
 
 The repository layout and the conventions behind it are in [`docs/`](docs/).
