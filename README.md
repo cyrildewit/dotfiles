@@ -46,6 +46,14 @@ starts at login. Run `brew services stop herdr` to undo that. The script that
 registers it runs once per machine, so a later `chezmoi apply` leaves the server
 stopped.
 
+The herdr hook that reports Claude Code sessions to that server is reinstalled on
+every apply rather than once, because herdr versions the hook script and rewrites
+it on update. Only that script is herdr's to write. The `settings.json` entry
+calling it is templated with the rest of the Claude Code settings, because an
+apply would otherwise revert what herdr wrote into that file. Windows is left
+out. The hook is a shell script run through `bash`, and nothing here has checked
+that it works there.
+
 ### Windows
 
 | Script             | Installs                                                              | Personal | Work |

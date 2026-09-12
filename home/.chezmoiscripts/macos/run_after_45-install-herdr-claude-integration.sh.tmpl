@@ -1,0 +1,3 @@
+{{ if eq .chezmoi.os "darwin" -}}
+{{   include "../scripts/macos/install-herdr-claude-integration.sh" }}
+{{- end }}

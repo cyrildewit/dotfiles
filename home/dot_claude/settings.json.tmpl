@@ -34,5 +34,19 @@
       "Bash(git clean:*)",
       "Bash(git rebase:*)"
     ]
-  }
+  }{{ if eq .chezmoi.os "darwin" }},
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '{{ .chezmoi.homeDir }}/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }{{ end }}
 }
