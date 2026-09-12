@@ -32,7 +32,7 @@ a machine that is already set up changes nothing.
 | `dependencies.sh`          | `chezmoi`, `gh`, `git`, `zsh`                                                                                                                                                                                      |    ✓     |   ✓    |
 | `oh_my_posh.sh`            | `oh-my-posh`                                                                                                                                                                                                       |    ✓     |   ✓    |
 | `docker.sh`                | `docker-desktop`                                                                                                                                                                                                   |    ✓     |   ✓    |
-| `tools.sh`                 | `ccusage`, `eza`, `htop`, `zsh-autosuggestions`                                                                                                                                                                    |    ✓     |   ✓    |
+| `tools.sh`                 | `ccusage`, `eza`, `herdr`, `htop`, `zsh-autosuggestions`                                                                                                                                                           |    ✓     |   ✓    |
 | `applications.sh`          | `1password`, `1password-cli`, `betterdisplay`, `brave-browser`, `claude`, `claude-code`, `ghostty`, `jetbrains-toolbox`, `logi-options+`, `macsyzones`, `obsidian`, `spotify`, `todoist-app`, `visual-studio-code` |    ✓     |   ✓    |
 | `fonts.sh`                 | `font-jetbrains-mono-nerd-font`                                                                                                                                                                                    |    ✓     |   ✓    |
 | `personal/applications.sh` | `proton-drive`, `proton-mail`, `proton-pass`                                                                                                                                                                       |    ✓     |   —    |
@@ -40,6 +40,11 @@ a machine that is already set up changes nothing.
 
 Everything above is skipped when it is already installed, including apps that
 were installed by hand rather than through Homebrew.
+
+`herdr` is also handed to `brew services`, so the server that owns its terminals
+starts at login. Run `brew services stop herdr` to undo that. The script that
+registers it runs once per machine, so a later `chezmoi apply` leaves the server
+stopped.
 
 ### Windows
 

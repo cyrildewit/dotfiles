@@ -1,0 +1,12 @@
+# Every option, with its default, comes from `herdr --default-config`.
+
+[theme]
+# The terminal follows the system appearance, so this does too.
+auto_switch = true
+
+[update]
+# The package manager owns the binary, Homebrew on macOS and scoop on Windows,
+# so an in-place `herdr update` would leave it holding a version it did not
+# install. The agent-detection manifest is data rather than a release, so that
+# check stays on.
+version_check = false
