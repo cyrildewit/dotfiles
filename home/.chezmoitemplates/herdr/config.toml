@@ -1,9 +1,78 @@
 # Every option, with its default, comes from `herdr --default-config`.
 
-[theme]
-# The terminal follows the system appearance, so this does too.
-auto_switch = true
+# Onboarding has been completed; a missing value re-triggers it on next launch.
+onboarding = false
 
+[theme]
+{{- if eq .chezmoi.os "windows" }}
+# Windows Terminal does not answer Herdr's background-color query, so auto_switch
+# cannot tell it is on a light scheme and falls back to the dark palette, which
+# shows up as a dark-gray sidebar. This machine runs Horizon Bright, so the light
+# palette is pinned. Flip name to "catppuccin" and swap the block below for the
+# Broadcast values if this terminal ever moves to the dark scheme.
+auto_switch = false
+name = "catppuccin-latte"
+{{- else }}
+# Ghostty reports the system appearance, so Herdr follows the light/dark switch
+# between the two palettes below. Ghostty and Windows Terminal both run Horizon
+# Bright in light mode and Broadcast in dark.
+auto_switch = true
+# The base themes only supply fallbacks for any token the custom palettes leave
+# unset. Catppuccin Latte keeps those fallbacks light, Catppuccin keeps them
+# dark. The built-in "terminal" theme is not used as a base: it inherits only
+# the 16 ANSI colors and leaves every menu, popup, and surface token on a dark
+# palette, which is unreadable over a light Horizon Bright ground.
+light_name = "catppuccin-latte"
+dark_name = "catppuccin"
+{{- end }}
+
+# Horizon Bright. Warm cream surfaces stepping down from the #FDF0ED terminal
+# background, with the Horizon pink as the accent. panel_bg is the tab-bar and
+# popup ground and also the active tab's text over the accent, so it stays light.
+[theme.custom{{ if ne .chezmoi.os "windows" }}.light{{ end }}]
+sidebar_bg    = "#FBEAE4"
+panel_bg      = "#F6DED5"
+surface_dim   = "#FAE5DE"
+surface0      = "#F5D9CE"
+surface1      = "#EFCFC2"
+active_row_bg = "#F9CEC3"
+selection_bg  = "#F9CEC3"
+overlay0      = "#C9A99E"
+overlay1      = "#B4988E"
+text          = "#16161D"
+subtext0      = "#6A6673"
+accent        = "#FC4777"
+red           = "#FC4777"
+green         = "#00CA86"
+yellow        = "#F2A682"
+peach         = "#F2A682"
+blue          = "#00BEDD"
+teal          = "#00CDCB"
+mauve         = "#FF58B1"
+{{ if ne .chezmoi.os "windows" }}
+# Broadcast. Neutral grey surfaces around the #2B2B2B terminal background, with
+# the Broadcast blue as the accent and its bluish selection carried through.
+[theme.custom.dark]
+sidebar_bg    = "#262626"
+panel_bg      = "#333333"
+surface_dim   = "#202020"
+surface0      = "#383838"
+surface1      = "#454545"
+active_row_bg = "#3A3A3A"
+selection_bg  = "#5A647E"
+overlay0      = "#585858"
+overlay1      = "#6E6E6E"
+text          = "#E6E1DC"
+subtext0      = "#A9A39E"
+accent        = "#6D9CBE"
+red           = "#DA4939"
+green         = "#519F50"
+yellow        = "#FFD24A"
+peach         = "#FF7B6B"
+blue          = "#6D9CBE"
+teal          = "#6E9CBE"
+mauve         = "#D0D0FF"
+{{ end -}}
 [update]
 # The package manager owns the binary, Homebrew on macOS and scoop on Windows,
 # so an in-place `herdr update` would leave it holding a version it did not
