@@ -1,6 +1,6 @@
 {
   "tui": "fullscreen",
-  "theme": "auto",
+  "theme": {{ if eq .chezmoi.os "windows" }}"light"{{ else }}"auto"{{ end }},
   "model": "opus[1m]",
   "includeCoAuthoredBy": false,
   "autoMemoryEnabled": false,
