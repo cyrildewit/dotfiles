@@ -16,6 +16,7 @@ fi
 readonly FORMULAE=(
     ccusage
     eza
+    glow
     herdr
     htop
     zsh-autosuggestions
