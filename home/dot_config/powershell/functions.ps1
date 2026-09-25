@@ -10,7 +10,8 @@ function Start-HerdrServer {
     # from PSExec and WMI commands") blocks that call, so after a reboot the
     # client can never start its own server. Start-Process uses CreateProcess
     # instead of WMI, which the rule does not touch. Run this once per boot.
-    if ((& herdr status server 2>$null) -match 'running') {
+    # Anchor the match: the stopped state reads "status: not running".
+    if ((& herdr status server 2>$null) -match '^status:\s+running') {
         Write-Host 'herdr server already running.'
         return
     }
