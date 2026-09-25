@@ -15,6 +15,15 @@ function Start-HerdrServer {
         Write-Host 'herdr server already running.'
         return
     }
-    Start-Process herdr -ArgumentList server -WindowStyle Hidden
+    # Every pane inherits the server's environment. Started from a Claude Code
+    # shell, the server would carry CLAUDE_CODE_CHILD_SESSION and friends, and
+    # each Claude session in a pane would then turn transcript saving off.
+    $inherited = Get-ChildItem env: | Where-Object { $_.Name -match '^CLAUDE' }
+    try {
+        $inherited | ForEach-Object { Remove-Item "env:$($_.Name)" }
+        Start-Process herdr -ArgumentList server -WindowStyle Hidden
+    } finally {
+        $inherited | ForEach-Object { Set-Item "env:$($_.Name)" $_.Value }
+    }
     Write-Host 'herdr server started.'
 }
