@@ -5,3 +5,4 @@
 # write a function in functions.ps1 and point the alias at it.
 
 Set-Alias -Name c -Value claude
+Set-Alias -Name herdr-init -Value Start-HerdrServer
