@@ -26,6 +26,7 @@ readonly CASKS=(
     macsyzones
     obsidian
     spotify
+    stats
     todoist-app
     visual-studio-code
 )
@@ -44,6 +45,7 @@ function bundle_path_for() {
         macsyzones) echo "/Applications/MacsyZones.app" ;;
         obsidian) echo "/Applications/Obsidian.app" ;;
         spotify) echo "/Applications/Spotify.app" ;;
+        stats) echo "/Applications/Stats.app" ;;
         todoist-app) echo "/Applications/Todoist.app" ;;
         *) echo "" ;;
     esac
