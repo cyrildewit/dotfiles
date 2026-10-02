@@ -15,6 +15,7 @@ readonly CASKS=(
     proton-drive
     proton-mail
     proton-pass
+    protonvpn
 )
 
 function bundle_path_for() {
@@ -22,6 +23,7 @@ function bundle_path_for() {
         proton-drive) echo "/Applications/Proton Drive.app" ;;
         proton-mail) echo "/Applications/Proton Mail.app" ;;
         proton-pass) echo "/Applications/Proton Pass.app" ;;
+        protonvpn) echo "/Applications/ProtonVPN.app" ;;
         *) echo "" ;;
     esac
 }

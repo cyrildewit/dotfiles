@@ -35,7 +35,7 @@ a machine that is already set up changes nothing.
 | `tools.sh`                 | `ccusage`, `eza`, `glow`, `herdr`, `htop`, `lazygit`, `zsh-autosuggestions`                                                                                                                                        |    ✓     |   ✓    |
 | `applications.sh`          | `1password`, `1password-cli`, `betterdisplay`, `brave-browser`, `claude`, `claude-code`, `ghostty`, `jetbrains-toolbox`, `logi-options+`, `macsyzones`, `obsidian`, `spotify`, `todoist-app`, `visual-studio-code` |    ✓     |   ✓    |
 | `fonts.sh`                 | `font-jetbrains-mono-nerd-font`                                                                                                                                                                                    |    ✓     |   ✓    |
-| `personal/applications.sh` | `proton-drive`, `proton-mail`, `proton-pass`                                                                                                                                                                       |    ✓     |   —    |
+| `personal/applications.sh` | `proton-drive`, `proton-mail`, `proton-pass`, `protonvpn`                                                                                                                                                          |    ✓     |   —    |
 | `optional/dotnet.sh`       | `dotnet`, `aspire`                                                                                                                                                                                                 |  opt-in  | opt-in |
 
 Everything above is skipped when it is already installed, including apps that
