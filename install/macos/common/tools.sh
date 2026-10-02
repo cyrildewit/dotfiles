@@ -19,6 +19,7 @@ readonly FORMULAE=(
     glow
     herdr
     htop
+    lazygit
     zsh-autosuggestions
 )
 

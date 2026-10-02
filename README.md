@@ -32,7 +32,7 @@ a machine that is already set up changes nothing.
 | `dependencies.sh`          | `chezmoi`, `gh`, `git`, `zsh`                                                                                                                                                                                      |    ✓     |   ✓    |
 | `oh_my_posh.sh`            | `oh-my-posh`                                                                                                                                                                                                       |    ✓     |   ✓    |
 | `docker.sh`                | `docker-desktop`                                                                                                                                                                                                   |    ✓     |   ✓    |
-| `tools.sh`                 | `ccusage`, `eza`, `herdr`, `htop`, `zsh-autosuggestions`                                                                                                                                                           |    ✓     |   ✓    |
+| `tools.sh`                 | `ccusage`, `eza`, `glow`, `herdr`, `htop`, `lazygit`, `zsh-autosuggestions`                                                                                                                                        |    ✓     |   ✓    |
 | `applications.sh`          | `1password`, `1password-cli`, `betterdisplay`, `brave-browser`, `claude`, `claude-code`, `ghostty`, `jetbrains-toolbox`, `logi-options+`, `macsyzones`, `obsidian`, `spotify`, `todoist-app`, `visual-studio-code` |    ✓     |   ✓    |
 | `fonts.sh`                 | `font-jetbrains-mono-nerd-font`                                                                                                                                                                                    |    ✓     |   ✓    |
 | `personal/applications.sh` | `proton-drive`, `proton-mail`, `proton-pass`                                                                                                                                                                       |    ✓     |   —    |
@@ -60,7 +60,7 @@ that it works there.
 |--------------------|-----------------------------------------------------------------------|:--------:|:----:|
 | `scoop.ps1`        | scoop                                                                 |    ✓     |  ✓   |
 | `dependencies.ps1` | `1password-cli`, `chezmoi`, `gh`, `git`                               |    ✓     |  ✓   |
-| `tools.ps1`        | `claude-code`, `eza`, `herdr`, `nodejs-lts`, `vim`                    |    ✓     |  ✓   |
+| `tools.ps1`        | `claude-code`, `eza`, `glow`, `herdr`, `lazygit`, `nodejs-lts`, `vim` |    ✓     |  ✓   |
 | `npm-tools.ps1`    | `@colbymchenry/codegraph`, `ccusage`, through npm                     |    ✓     |  ✓   |
 | `applications.ps1` | `brave`, `bruno`, `claude`, `jetbrains-toolbox`, `vscode`             |    ✓     |  ✓   |
 | `onepassword.ps1`  | `AgileBits.1Password`, through winget                                 |    ✓     |  ✓   |

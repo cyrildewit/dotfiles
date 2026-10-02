@@ -22,6 +22,7 @@ $Packages = @(
     'eza'
     'glow'
     'herdr'
+    'lazygit'
     'nodejs-lts'
     'vim'
 )
