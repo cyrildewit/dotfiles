@@ -8,6 +8,11 @@
     The Windows counterpart to install/macos/common/tools.sh. Installs packages
     that are wanted on the machine but that nothing in this repository requires,
     so a machine without them still gets a working configuration.
+
+    Some entries need the extras bucket, which is cloned with git. That comes
+    from dependencies.ps1, since chezmoi runs every run_once_before_ script
+    ahead of the unprefixed ones whatever their numbers say. A CI run gets git
+    from the runner image instead.
 #>
 
 Set-StrictMode -Version Latest
@@ -16,6 +21,10 @@ $ErrorActionPreference = 'Stop'
 if ($env:DOTFILES_DEBUG) {
     Set-PSDebug -Trace 1
 }
+
+$Buckets = @(
+    'extras'
+)
 
 $Packages = @(
     'claude-code'
@@ -69,6 +78,44 @@ function Test-CI {
     #>
 
     return ($env:CI -eq 'true')
+}
+
+function Test-BucketAdded {
+    <#
+    .DESCRIPTION
+        Read off disk rather than from `scoop bucket list`, whose output has
+        been a list of names in some versions and a table of objects in others.
+    #>
+
+    param([Parameter(Mandatory = $true)][string] $Name)
+
+    $bucket = Join-Path (Get-ScoopRoot) "buckets\$Name"
+
+    return (Test-Path -LiteralPath $bucket -PathType Container)
+}
+
+function Add-MissingBuckets {
+    <#
+    .DESCRIPTION
+        Adding a bucket that is already there is an error rather than a
+        no-op, so each is checked first.
+    #>
+
+    foreach ($bucket in $Buckets) {
+        if (Test-BucketAdded -Name $bucket) {
+            continue
+        }
+
+        Write-Host "Adding the $bucket bucket."
+        scoop bucket add $bucket
+
+        # Checked by outcome, for the reason Test-PackageInstalled gives.
+        # Failing here rather than at the install names the actual problem,
+        # which is usually that git is missing.
+        if (-not (Test-BucketAdded -Name $bucket)) {
+            throw "scoop bucket add $bucket did not add the bucket."
+        }
+    }
 }
 
 function Test-PackageInstalled {
@@ -148,6 +195,7 @@ function Invoke-Main {
         throw 'scoop is not on PATH. install/windows/common/scoop.ps1 runs before this and should have installed it.'
     }
 
+    Add-MissingBuckets
     Install-MissingPackages
 }
 
