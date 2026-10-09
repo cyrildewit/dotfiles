@@ -2,8 +2,8 @@
 name: writing-code-comments
 description: >
   Gates whether a code comment should exist and forces the ones that stay to explain why, not what.
-  Use ALWAYS before writing or editing a comment in any language (Python, TypeScript, Go, Rust, SQL), and when reviewing a diff that adds comments.
-  Removes the comment types that clutter the codebase: narration that restates the code, change-history and chat-context notes ("previously did X", "per PR #123", "AI:"), perishable measurements and current-state stamps ("~20 min build", "currently", "today"), commented-out code, and redundant docstrings.
+  Use ALWAYS before writing or editing a comment in any language (PHP, C#, Python, TypeScript, Go, Rust, SQL, shell), and when reviewing a diff that adds comments.
+  Removes the comment types that clutter the codebase: narration that restates the code, change-history and chat-context notes ("previously did X", "per PR #123", "AI:"), perishable measurements and current-state stamps ("~20 min build", "currently", "today"), commented-out code, and redundant doc comments.
   Keeps the ones that earn their place: a non-obvious why, a warning about a non-local consequence, a pointer to context a future reader can't reconstruct.
   Not for user-facing copy or commit messages.
 ---
@@ -20,17 +20,19 @@ Before writing a comment, answer:
 
 If the answer is "it restates what the code does", delete it. Rename the variable or extract a function instead.
 
+The examples below mix comment syntaxes (`#`, `//`, `--`, `/** */`). The rules are the same in every language. Write each comment in the file's own syntax and doc-comment format.
+
 A comment worth keeping answers a _why_ the code can't:
 
-- ✅ `# ATOMIC_REQUESTS is off, so wrap the two writes that must commit together`
+- ✅ `// The connection runs in autocommit mode, so wrap the two writes that must commit together`
 - ✅ `// Stripe sends the amount in cents; the rest of our system uses dollars`
-- ✅ `# Kept in sync with the enum in migrations/0042; update both`
+- ✅ `-- Kept in sync with the OrderStatus enum; update both`
 
 ## Delete these
 
 ### Narration that restates the code
 
-- ❌ `# increment the counter` above `counter += 1`
+- ❌ `// increment the counter` above `$counter++`
 - ❌ `// loop over users` above `for user of users`
 - ❌ `# return the result` above `return result`
 
@@ -66,11 +68,12 @@ Numbers that stay:
 
 Delete it; the version history has it if it's needed again. Commented-out code is ambiguous to the next reader, who can't tell whether it's a note, a rollback plan, or an accident.
 
-### Redundant docstrings and type restatements
+### Redundant doc comments and type restatements
 
-- ❌ A docstring that repeats the function name in prose: `"""Gets the user by id."""` on `get_user_by_id`
-- ❌ `# type: string` on an already-typed field
-- ❌ Python test doc comments (the repo convention is none; the test name says it)
+- ❌ A doc comment that repeats the function name in prose: `/** Get the user by ID. */` on `getUserById()`, `"""Gets the user by id."""` on `get_user_by_id`
+- ❌ `@param string $name` on a parameter already declared as `string $name`
+- ❌ `// type: string` on an already-typed field
+- ❌ A doc comment on a test whose name already says what it checks. Follow the repo's convention for test comments.
 
 ## Keep these
 
@@ -93,7 +96,7 @@ Write comments the way you'd write technical documentation: explicit and precise
 The fix for the em-dash is the connective, not more words. A short comment is fine once the dash is gone:
 
 - ❌ `# batch here — avoids N+1`
-- ✅ `# batch here to avoid an N+1 against posthog_organizationmembership`
+- ✅ `// batch here to avoid an N+1 query against the memberships table`
 
 ## When you're tempted to comment
 
