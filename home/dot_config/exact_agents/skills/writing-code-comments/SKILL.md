@@ -5,7 +5,7 @@ description: >
   Use ALWAYS before writing or editing a comment in any language (Python, TypeScript, Go, Rust, SQL), and when reviewing a diff that adds comments.
   Removes the comment types that clutter the codebase: narration that restates the code, change-history and chat-context notes ("previously did X", "per PR #123", "AI:"), perishable measurements and current-state stamps ("~20 min build", "currently", "today"), commented-out code, and redundant docstrings.
   Keeps the ones that earn their place: a non-obvious why, a warning about a non-local consequence, a pointer to context a future reader can't reconstruct.
-  Not for user-facing copy (see `/writing-user-facing-copy`) or commit messages.
+  Not for user-facing copy or commit messages.
 ---
 
 # Writing code comments
