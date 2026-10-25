@@ -34,6 +34,7 @@ a machine that is already set up changes nothing.
 | `docker.sh`                | `docker-desktop`                                                                                                                                                                                                                       |    ✓     |   ✓    |
 | `tools.sh`                 | `ccusage`, `eza`, `glow`, `herdr`, `htop`, `lazygit`, `zsh-autosuggestions`                                                                                                                                                            |    ✓     |   ✓    |
 | `moat.sh`                  | `moat`                                                                                                                                                                                                                                 |    ✓     |   ✓    |
+| `t3_cli.sh`                | `t3`, through T3's installer                                                                                                                                                                                                           |    ✓     |   ✓    |
 | `applications.sh`          | `1password`, `1password-cli`, `betterdisplay`, `brave-browser`, `claude`, `claude-code`, `ghostty`, `jetbrains-toolbox`, `logi-options+`, `macsyzones`, `obsidian`, `spotify`, `stats`, `t3-code`, `todoist-app`, `visual-studio-code` |    ✓     |   ✓    |
 | `app_store.sh`             | `mas`, Amphetamine (Mac App Store)                                                                                                                                                                                                     |    ✓     |   ✓    |
 | `fonts.sh`                 | `font-jetbrains-mono-nerd-font`                                                                                                                                                                                                        |    ✓     |   ✓    |
@@ -42,6 +43,11 @@ a machine that is already set up changes nothing.
 
 Everything above is skipped when it is already installed, including apps that
 were installed by hand rather than through Homebrew.
+
+The T3 Code CLI comes from T3's own installer, since no package manager carries
+it. It lands in `~/.local/bin`, which is added to `PATH`, and updates itself
+with `t3 update`. Intel Macs are skipped, because T3 publishes no CLI build for
+them.
 
 `herdr` is also handed to `brew services`, so the server that owns its terminals
 starts at login. Run `brew services stop herdr` to undo that. The script that
@@ -64,9 +70,13 @@ that it works there.
 | `dependencies.ps1` | `1password-cli`, `chezmoi`, `gh`, `git`                               |    ✓     |  ✓   |
 | `tools.ps1`        | `claude-code`, `eza`, `glow`, `herdr`, `lazygit`, `nodejs-lts`, `vim` |    ✓     |  ✓   |
 | `npm-tools.ps1`    | `@colbymchenry/codegraph`, `ccusage`, through npm                     |    ✓     |  ✓   |
+| `t3-cli.ps1`       | `t3`, through T3's installer                                          |    ✓     |  ✓   |
 | `applications.ps1` | `brave`, `bruno`, `claude`, `jetbrains-toolbox`, `t3code`, `vscode`   |    ✓     |  ✓   |
 | `onepassword.ps1`  | `AgileBits.1Password`, through winget                                 |    ✓     |  ✓   |
 | `fonts.ps1`        | `JetBrainsMono-NF`, `JetBrainsMono-NF-Mono`, `JetBrainsMono-NF-Propo` |    ✓     |  ✓   |
+
+`t3-cli.ps1` also adds `%USERPROFILE%\.local\bin`, where the T3 Code CLI
+lands, to the user `PATH`.
 
 `applications.ps1` cannot skip an application that was installed by hand, since
 Windows has no equivalent of `/Applications` to check: an installer can land in
