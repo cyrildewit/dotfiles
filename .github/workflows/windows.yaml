@@ -149,6 +149,7 @@ jobs:
               'herdr'
               'jetbrains-toolbox'
               'nodejs-lts'
+              't3code'
               'vim'
               'vscode'
               'JetBrainsMono-NF'

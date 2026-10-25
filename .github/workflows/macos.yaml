@@ -101,8 +101,8 @@ jobs:
             1password 1password-cli betterdisplay brave-browser claude \
             claude-code docker-desktop font-jetbrains-mono-nerd-font ghostty \
             jetbrains-toolbox logi-options+ macsyzones obsidian spotify \
-            stats todoist-app visual-studio-code proton-drive proton-mail \
-            proton-pass protonvpn; do
+            stats t3-code todoist-app visual-studio-code proton-drive \
+            proton-mail proton-pass protonvpn; do
             echo "Checking ${cask}"
             brew info --cask "${cask}" > /dev/null
           done
