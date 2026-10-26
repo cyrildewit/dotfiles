@@ -229,9 +229,7 @@ Print the PR URL and note that it is a draft awaiting the user's review.
 
 ## Prose rules
 
-The `unslop` skill covers the general case and applies here in full. These are the additions that
-matter for pull requests specifically, plus the few worth restating because they are the ones that
-show up most.
+Apply these to every sentence of the title and description.
 
 1. **No em dashes.** Use a period or a comma. Not an en dash, not a hyphen standing in for one, and
    not parentheses as a substitute.
