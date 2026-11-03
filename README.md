@@ -39,6 +39,7 @@ a machine that is already set up changes nothing.
 | `app_store.sh`             | `mas`, Amphetamine (Mac App Store)                                                                                                                                                                                                     |    ✓     |   ✓    |
 | `fonts.sh`                 | `font-jetbrains-mono-nerd-font`                                                                                                                                                                                                        |    ✓     |   ✓    |
 | `personal/applications.sh` | `proton-drive`, `proton-mail`, `proton-pass`, `protonvpn`                                                                                                                                                                              |    ✓     |   —    |
+| `personal/st_reborn.sh`    | `st-reborn`, from the `jrpersonal/tap` tap                                                                                                                                                                                             |    ✓     |   —    |
 | `optional/dotnet.sh`       | `dotnet`, `aspire`                                                                                                                                                                                                                     |  opt-in  | opt-in |
 
 Everything above is skipped when it is already installed, including apps that
