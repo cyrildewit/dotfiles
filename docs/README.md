@@ -3,3 +3,4 @@
 - [Layout](layout.md)
 - [Where git repositories live](repos.md)
 - [MacsyZones](macsyzones.md)
+- [Manual setup](manual-setup/README.md)
