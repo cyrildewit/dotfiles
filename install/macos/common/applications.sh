@@ -27,6 +27,7 @@ readonly CASKS=(
     obsidian
     spotify
     stats
+    t3-code
     todoist-app
     visual-studio-code
 )
@@ -46,6 +47,7 @@ function bundle_path_for() {
         obsidian) echo "/Applications/Obsidian.app" ;;
         spotify) echo "/Applications/Spotify.app" ;;
         stats) echo "/Applications/Stats.app" ;;
+        t3-code) echo "/Applications/T3 Code (Beta).app" ;;
         todoist-app) echo "/Applications/Todoist.app" ;;
         *) echo "" ;;
     esac

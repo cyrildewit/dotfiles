@@ -31,6 +31,7 @@ $Packages = @(
     'bruno'
     'claude'
     'jetbrains-toolbox'
+    't3code'
     'vscode'
 )
 

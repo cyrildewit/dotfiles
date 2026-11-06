@@ -1,4 +1,7 @@
 {{ if dig "archipel_academy" "enabled" false . -}}
 [user]
     email = {{ .archipel_academy.email | quote }}
+{{- if and (not .ci) .onepassword_signer }}
+    signingkey = {{ onepasswordRead "op://z7a4fryxuctsgicr5jdmjv74ci/blbccnnswbyzpwgcb7biens7du/public key" .archipel_academy.onepassword_account }}
+{{- end }}
 {{ end -}}
