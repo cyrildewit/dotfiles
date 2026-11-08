@@ -29,8 +29,7 @@
       "Read(~/.ssh/**)",
       "Read(~/.aws/**)",
       "Read(**/secrets/**)",
-      "Read(**/*.pem)",
-      "Edit(.env*)"
+      "Read(**/*.pem)"
     ]
   }{{ if eq .machine "personal" }},
   "autoMode": {
