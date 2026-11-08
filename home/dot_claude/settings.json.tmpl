@@ -32,7 +32,36 @@
       "Read(**/*.pem)",
       "Edit(.env*)"
     ]
-  }{{ if eq .chezmoi.os "darwin" }},
+  }{{ if eq .machine "personal" }},
+  "autoMode": {
+    "environment": [
+      "### Org-wide",
+      "**Organization**: None configured",
+      "**Cloud provider(s)**: None configured",
+      "**Repository visibility**: PUBLIC — cyrildewit/dotfiles (github.com:cyrildewit/dotfiles.git) is public per gh; treat any push here as publishing, and only this repo's own work belongs in it",
+      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
+      "**Secrets management**: op (1Password CLI) observed in usage (3× in-project, 5× shell history) — used for local secret retrieval, not a confirmed org secrets backend",
+      "**Default / protected branches**: main (default); no branch protection rules or rulesets listed via gh for cyrildewit/dotfiles",
+      "**CI/CD deploy targets**: None configured",
+      "**Network posture**: None configured",
+      "**Host containment**: None configured — assume Claude Code runs on an ordinary developer machine with open internet",
+      "**Source control**: The trusted repo cyrildewit/dotfiles (github.com:cyrildewit/dotfiles.git) and its remote only — no additional orgs configured",
+      "**Trusted internal domains**: None configured",
+      "**Trusted cloud buckets**: None configured",
+      "**Key internal services**: None configured",
+      "**Internal package registry**: None configured",
+      "**Sensitive data locations & audiences**: any file or store holding personal data, confidential business data, credentials, regulated data, or similarly sensitive material; preserve exact handles when known and share only with audiences cleared at the [named+specifics] bar",
+      "**Data retention / declassification**: None configured",
+      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment",
+      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
+      "### User-specific",
+      "**Primary use of Claude Code**: software development (dotfiles/machine-setup management via chezmoi)",
+      "**Trusted repo**: cyrildewit/dotfiles (github.com:cyrildewit/dotfiles.git), the working directory at /Users/cyrildewit/.local/share/chezmoi — PUBLIC repo: confidential material is not cleared for it, and only this repo's own work (not content ported in from elsewhere) is appropriate to commit or push here",
+      "**Org-specific CLIs**: chezmoi, herdr, moat, t3 — dotfiles/personal tooling CLIs observed in repo usage and shell history; not org-internal, just personal toolchain",
+      "routine under /Users/cyrildewit/.local/share/chezmoi/ prefix: chezmoi, brew, defaults, herdr, ruby, op, strings, sysctl operations consistent with machine-setup scripting"
+    ]
+  }{{ end }}{{ if eq .chezmoi.os "darwin" }},
   "hooks": {
     "SessionStart": [
       {
