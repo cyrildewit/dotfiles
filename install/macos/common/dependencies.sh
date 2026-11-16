@@ -17,6 +17,7 @@ readonly FORMULAE=(
     chezmoi
     gh
     git
+    gitleaks
     zsh
 )
 

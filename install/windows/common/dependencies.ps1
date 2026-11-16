@@ -30,6 +30,7 @@ $Packages = @(
     'chezmoi'
     'gh'
     'git'
+    'gitleaks'
 )
 
 function Get-ScoopRoot {

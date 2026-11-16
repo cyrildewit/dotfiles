@@ -9,6 +9,13 @@
     sshCommand = C:/Windows/System32/OpenSSH/ssh.exe
 
 {{ end -}}
+# A config hook rather than core.hooksPath, which would replace every repo's own
+# hooks and is itself overridden by a repo that sets one, such as Husky. A
+# missing gitleaks fails the command and so blocks the commit.
+[hook "gitleaks"]
+    event = pre-commit
+    command = gitleaks git --pre-commit --staged --redact --no-banner
+
 [include]
     path = config-personal
 

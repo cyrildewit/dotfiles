@@ -29,7 +29,7 @@ a machine that is already set up changes nothing.
 |----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------:|:------:|
 | `command_line_tools.sh`    | Xcode Command Line Tools                                                                                                                                                                                                               |    ✓     |   ✓    |
 | `homebrew.sh`              | Homebrew                                                                                                                                                                                                                               |    ✓     |   ✓    |
-| `dependencies.sh`          | `chezmoi`, `gh`, `git`, `zsh`                                                                                                                                                                                                          |    ✓     |   ✓    |
+| `dependencies.sh`          | `chezmoi`, `gh`, `git`, `gitleaks`, `zsh`                                                                                                                                                                                              |    ✓     |   ✓    |
 | `oh_my_posh.sh`            | `oh-my-posh`                                                                                                                                                                                                                           |    ✓     |   ✓    |
 | `docker.sh`                | `docker-desktop`                                                                                                                                                                                                                       |    ✓     |   ✓    |
 | `tools.sh`                 | `ccusage`, `eza`, `glow`, `herdr`, `htop`, `lazygit`, `zsh-autosuggestions`                                                                                                                                                            |    ✓     |   ✓    |
@@ -68,7 +68,7 @@ that it works there.
 | Script             | Installs                                                              | Personal | Work |
 |--------------------|-----------------------------------------------------------------------|:--------:|:----:|
 | `scoop.ps1`        | scoop                                                                 |    ✓     |  ✓   |
-| `dependencies.ps1` | `1password-cli`, `chezmoi`, `gh`, `git`                               |    ✓     |  ✓   |
+| `dependencies.ps1` | `1password-cli`, `chezmoi`, `gh`, `git`, `gitleaks`                   |    ✓     |  ✓   |
 | `tools.ps1`        | `claude-code`, `eza`, `glow`, `herdr`, `lazygit`, `nodejs-lts`, `vim` |    ✓     |  ✓   |
 | `npm-tools.ps1`    | `@colbymchenry/codegraph`, `ccusage`, through npm                     |    ✓     |  ✓   |
 | `t3-cli.ps1`       | `t3`, through T3's installer                                          |    ✓     |  ✓   |
