@@ -24,7 +24,7 @@ on:
 jobs:
   bootstrap:
     name: Bootstrap a clean machine
-    runs-on: macos-14
+    runs-on: macos-15
 
     steps:
       - name: Run setup.sh the way the README documents
