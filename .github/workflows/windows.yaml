@@ -141,6 +141,7 @@ jobs:
               'chezmoi'
               'gh'
               'git'
+              'gitleaks'
               'brave'
               'bruno'
               'claude'
